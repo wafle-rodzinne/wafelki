@@ -1,0 +1,13 @@
+{% extends 'based.html' %}
+
+{% block header %}
+  <h1>{% block title %}Alfabet{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="username">Podaj nazwę kanału</label>
+    <input name="username" id="username" required>
+    <input type="submit" value="Dalej">
+  </form>
+{% endblock %}
