@@ -5,8 +5,58 @@
 {% endblock %}
 
 {% block content %}
+    <div>
+      <label>
+        <image src="{{ session['streamer_avatar'] }}" height="64px" width="64px">
+        {{session['streamer_name']}} - {{session['result']}}/{{session['max_points']}}
+      </label>
+    </div>
+    <div>
+      <table>
+        <tr>
+          <th>Punkty</th><th>Litera</th><th>Użytkownik</th><th>Info</th>
+        </tr>
+        {% for letter in session.alphabet %}
+          {% set usr  = letter + '-usr'  %}
+          {% set info = letter + '-info' %}
+          {% set topu = letter + '-topu' %}
+          {% set topv = letter + '-topv' %}
+          {% set msg  = session[info] %}
+
+          {% if session['mode'] == 'messages' %}
+            {% set endmsg = 'wysyłając dotychczas na czacie ' + session[topv] + ' wiadomości.' %}
+          {% elif session['mode'] == 'watchtime' %}
+            {% set endmsg = 'oglądając wytrwale przez ' + session[topv] + ' godzin.' %}
+          {% elif session['mode'] == 'points' %}
+            {% set endmsg = 'zbierając zatrważające ' + session[topv] + '(nazwa punktacji).' %}
+          {% endif %}
+          
+          {% if session[info] == 'exact' %}
+            {% set point = '1' %}
+            {% set endmsg = session[topu] + ' ' %}
+          {% elif session[info] == 'close' %}
+            {% set point = '0.5' %}
+            {% set endmsg = session[topu] + ' ' %}
+          {% elif session[info] == 'far' %}
+            {% set point = '0' %}
+            {% set endmsg = session[topu] + ' ' %}
+          {% elif session[info] == 'noanswer' %}
+            {% set point = '0' %}
+            {% set endmsg = session[topu] + ' tego nie widzi ' + endmsg %}
+          {% elif session[info] == 'nouser' %}
+            {% set point = '0' %}
+            {% set endmsg = '' %}
+          {% else %}{# unknown #}
+            {% set point = '0' %}
+            {% set endmsg = session[topu] + ' która wspiera cię ' + endmsg %}
+          {% endif %}
+          <tr>
+            <th>{{ point }}</th><th>{{ letter }}</th><th>{{ session[usr] }}</th><th>{{ session[msg] }}{{ endmsg }}</th>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
   <form method="post">
-    <label>Wynik</label>
-    <input type="submit" value="Restart">
+    <input type="submit" value="Powrót">
   </form>
 {% endblock %}

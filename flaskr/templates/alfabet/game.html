@@ -1,0 +1,30 @@
+{% extends 'based.html' %}
+
+{% block header %}
+  <h1>{% block title %}Test - messages{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <div>
+      <label><image src="{{ session['streamer_avatar'] }}" height="64px" width="64px">{{ session.streamer_name }}</label>
+    </div>
+    <div>
+        <table>
+            {% for i in range(13) %}
+            <tr>
+              <th>{{ session.alpha[i] }}</th>
+              <th>
+                <input name="{{ session.alpha[i] }}-usr" id="{{ session.alpha[i] }}-usr">
+              </th>
+              <th>{{ session.bet[i] }}</th>
+              <th>
+                <input name="{{ session.bet[i] }}-usr" id="{{ session.bet[i] }}-usr">
+              </th>
+            </tr>
+            {% endfor %}
+        </table>
+        <input type="submit" value="Result">
+    </div>
+  </form>
+{% endblock %}

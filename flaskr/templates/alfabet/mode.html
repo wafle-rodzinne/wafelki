@@ -1,0 +1,18 @@
+{% extends 'based.html' %}
+
+{% block header %}
+  <h1>{% block title %}Test{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <div>
+      <label><image src="{{ session['streamer_avatar'] }}" height="64px" width="64px">{{ session.streamer_name }}</label>
+    </div>
+    <div>
+      <input type="submit" name="messages" value="Messages">
+      <input type="submit" name="watchtime" value="Watchtime">
+      <input type="submit" name="points" value="Points">
+    </div>
+  </form>
+{% endblock %}

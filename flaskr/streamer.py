@@ -1,4 +1,5 @@
 import requests
+from time import time
 
 class Streamer():
     def __init__(self, name):
@@ -7,7 +8,8 @@ class Streamer():
         self.chatters       = None
         self.twitchEmotes   = None
         self.sevenTVEmotes  = None
-        self.bots           = ['streamelements', 'fossabot', self.name]
+        self.bots           = ['streamelements', 'fossabot', 'nightbot', self.name]
+        self.avatar         = self.requestAvatar()
     
 # =========================================== REQUESTS ===========================================
     def requestId(self):
@@ -31,6 +33,24 @@ class Streamer():
         if not req:
             return [0, 0]
         return [req.json()['points'], req.json()['watchtime']]
+
+    def requestAvatar(self):
+        req = str(requests.get(f'https://www.twitch.tv/{self.name}').content)
+        tries = 3
+
+        while req.find('<meta property="og:image" content="') == -1 and tries > 0:
+            req = str(requests.get(f'https://www.twitch.tv/{self.name}'))
+            tries -= 1
+
+        if req.find('<meta property="og:image" content="') == -1:
+            from flask import url_for
+            return url_for('static', filename='img/missing_avatar.jpg')
+
+        trash, trash_content = req.split('<meta property="og:image" content="')
+        content_with_trash   = trash_content.split('"/>')
+        content              = content_with_trash[0]
+
+        return content
 # ================================================================================================
 
 # =========================================== DB SELECT ==========================================
@@ -92,9 +112,12 @@ class Streamer():
             return False # Error
         bot_names = self.bots
         bot_flag = False
+        db_query = []
+
+        start = time()
 
         for chatter in self.chatters:
-
+            # Removing bots
             for bot_name in bot_names:
                 if bot_name == chatter['name']:
                     bot_flag = True
@@ -106,27 +129,31 @@ class Streamer():
 
             points, watchtime = self.requestPointsWatchtime(chatter['name'])
             chatter_id        = self.getChatterId(db, chatter['name'])
-            
-            tries = 3
+            tries             = 3
             while chatter_id is None and tries:
                 self.dbInsertChannelsChatters(db, chatter['name'])
                 chatter_id = self.getChatterId(db, chatter['name'])
                 tries -= 1
             if chatter_id is None:
                 continue # Error
+            db_query.append((chatter_id[0], chatter['amount'], watchtime,
+                             points, chatter['amount'], watchtime, points))
+        try:
+            db.executemany(
+                f"INSERT INTO chatters (chatter_id, messages, watchtime, points) \
+                VALUES (?, ?, ?, ?) \
+                ON CONFLICT (chatter_id) \
+                DO UPDATE SET \
+                messages=?, watchtime=?, points=?;",
+                db_query,
+            )
+            db.commit()
+        except db.IntegrityError:
+            pass # Error
 
-            try:
-                db.execute(
-                    f"INSERT INTO chatters (chatter_id, messages, watchtime, points) \
-                    VALUES (?, ?, ?, ?) \
-                    ON CONFLICT (chatter_id) \
-                    DO UPDATE SET \
-                    messages={chatter['amount']}, watchtime={watchtime}, points={points};",
-                    (chatter_id[0], chatter['amount'], watchtime, points),
-                )
-                db.commit()
-            except db.IntegrityError:
-                pass # Error
+        end = time()
+        print(f' - Preparing time: {round((end - start)*100)}')
+
         return True
 
     def dbInsertChannelsEmotes(self, db, emote):
@@ -143,7 +170,10 @@ class Streamer():
     def dbInsertEmotes(self, db):
         if not self.sevenTVEmotes or not self.twitchEmotes or not self.id:
             return False
+        db_query = []
         emotes = self.sevenTVEmotes + self.twitchEmotes
+
+        start = time()
 
         for emote in emotes:
             emote_id = self.getEmoteId(db, emote['emote'])
@@ -154,18 +184,23 @@ class Streamer():
                 tries -= 1
             if emote_id is None:
                 continue # Error
+            db_query.append((emote_id[0], emote['amount'], emote['amount']))
             
-            try:
-                db.execute(
-                    f"INSERT INTO emotes (emote_id, amount) \
-                    VALUES (?, ?) \
-                    ON CONFLICT (emote_id) \
-                    DO UPDATE SET \
-                    amount={emote['amount']};",
-                    (emote_id[0], emote['amount']),
-                )
-                db.commit()
-            except db.IntegrityError:
-                pass # Error
+        try:
+            db.executemany(
+                f"INSERT INTO emotes (emote_id, amount) \
+                VALUES (?, ?) \
+                ON CONFLICT (emote_id) \
+                DO UPDATE SET \
+                amount=?;",
+                db_query,
+            )
+            db.commit()
+        except db.IntegrityError:
+            pass # Error
+
+        end = time()
+        print(f' - Preparing time: {round((end - start)*100)}')
+
         return True
 # ================================================================================================
