@@ -81,13 +81,22 @@ class Streamer():
 
 # =========================================== DB INSERT ==========================================
     def dbInsert(self, db):
+        errors = []
+
         print("Channels Insert")
-        self.dbInsertChannels(db)
+        if not self.dbInsertChannels(db):
+            errors.append('Channels Error')
+
         print("Chatters Insert")
-        self.dbInsertChatters(db)
+        if not self.dbInsertChatters(db):
+            errors.append('Chatters Error')
+
         print("Emotes Insert")
-        self.dbInsertEmotes(db)
+        if not self.dbInsertEmotes(db):
+            errors.append('Emotes Error')
+
         print("Finish")
+        return errors
 
     def dbInsertChannels(self, db):
         if not self.name or not self.id:

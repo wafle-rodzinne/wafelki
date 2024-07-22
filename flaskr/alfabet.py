@@ -17,6 +17,8 @@ bp = Blueprint('alfabet', __name__, url_prefix='/alfabet')
 
 @bp.route('/', methods=('GET', 'POST'))
 def index():
+    session.clear()
+
     if request.method == 'POST':
         error = None
 
@@ -27,22 +29,24 @@ def index():
             flash('Musisz wpisać nazwę kanału. Dzięki :D')
         
         streamer = Streamer(username)
+        db = get_db()
+        db_errors = streamer.dbInsert(db)
         
         if not streamer.requestId() and username:
             error = 'Missing username id. '
             flash('Fajnie jakby taki kanał chociaż istniał...')
-        elif not streamer.requestChatStats and username():
+        elif not streamer.requestChatStats() and username:
             error = 'Missing stats. '
             flash('Streamelements zawiódł... Spróbuj za chwilę może odpowie.')
-
+        elif db_errors and username:
+            error = 'Database insert error.'
+            flash('Wystąpił problem z ładowaniem bazy danych, spróbuj ponownie.')
+            flash('Jeśli problem się powtarza, odpuść. Może kiedyś naprawię.')
         if error is None:
-            session.clear()
             session['streamer_name'] = streamer.name
             session['streamer_avatar'] = streamer.avatar
             session['points_name'] = streamer.requestPointsName()
 
-            db = get_db()
-            streamer.dbInsert(db)
 
             return redirect(url_for("alfabet.test", streamer_name=streamer.name))
 
