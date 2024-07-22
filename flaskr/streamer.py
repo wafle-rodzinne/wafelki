@@ -9,7 +9,7 @@ class Streamer():
         self.twitchEmotes   = None
         self.sevenTVEmotes  = None
         self.bots           = ['streamelements', 'fossabot', 'nightbot', self.name]
-        self.avatar         = self.requestAvatar()
+        self.avatar         = None
     
 # =========================================== REQUESTS ===========================================
     def requestId(self):
@@ -44,13 +44,15 @@ class Streamer():
 
         if req.find('<meta property="og:image" content="') == -1:
             from flask import url_for
-            return url_for('static', filename='img/missing_avatar.png')
+            self.avatar = url_for('static', filename='img/missing_avatar.png')
+            return False
 
         trash, trash_content = req.split('<meta property="og:image" content="')
         content_with_trash   = trash_content.split('"/>')
         content              = content_with_trash[0]
 
-        return content
+        self.avatar = content
+        return True
 
     def requestPointsName(self):
         req = requests.get(f'https://api.streamelements.com/kappa/v2/loyalty/{self.id}')
@@ -100,14 +102,16 @@ class Streamer():
 
     def dbInsertChannels(self, db):
         if not self.name or not self.id:
+            print('name or id', self.name, self.id)
             return False # Error
         try:
             db.execute(
-                "INSERT INTO channels (channel_id, streamer) VALUES (?, ?)",
+                "INSERT OR IGNORE INTO channels (channel_id, streamer) VALUES (?, ?) ",
                 (self.id, self.name),
             )
             db.commit()
         except db.IntegrityError:
+            print(db.IntegrityError)
             return False # Error
         return True
 

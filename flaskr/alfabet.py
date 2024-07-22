@@ -20,7 +20,7 @@ def index():
     session.clear()
 
     if request.method == 'POST':
-        error = None
+        error = None # to mogla by być lista
 
         username = request.form['username']
 
@@ -30,18 +30,24 @@ def index():
         
         streamer = Streamer(username)
         db = get_db()
-        db_errors = streamer.dbInsert(db)
+
+        id_good         = streamer.requestId()
+        chatstats_good  = streamer.requestChatStats()
+        db_errors       = streamer.dbInsert(db)
+        avatar_good     = streamer.requestAvatar()
         
-        if not streamer.requestId() and username:
+        if not id_good and username:
             error = 'Missing username id. '
             flash('Fajnie jakby taki kanał chociaż istniał...')
-        elif not streamer.requestChatStats() and username:
+        elif not chatstats_good and username:
             error = 'Missing stats. '
             flash('Streamelements zawiódł... Spróbuj za chwilę może odpowie.')
         elif db_errors and username:
             error = 'Database insert error.'
+            print(db_errors)
             flash('Wystąpił problem z ładowaniem bazy danych, spróbuj ponownie.')
             flash('Jeśli problem się powtarza, odpuść. Może kiedyś naprawię.')
+
         if error is None:
             session['streamer_name'] = streamer.name
             session['streamer_avatar'] = streamer.avatar
