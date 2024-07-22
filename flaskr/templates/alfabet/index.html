@@ -1,13 +1,27 @@
 {% extends 'based.html' %}
 
 {% block header %}
-  <h1>{% block title %}Alfabet{% endblock %}</h1>
+  <h1>{% block title %}ABC Szczura{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-  <form method="post">
-    <label for="username">Podaj nazwę kanału</label>
-    <input name="username" id="username" required>
-    <input type="submit" value="Dalej">
+  <form class="container" method="post">
+
+    <label for="username" id="label-username">Podaj nazwę kanału</label>
+
+    <div class="container" id="form-input">
+      <input name="username" id="username">
+      <input id="submit-start" type="submit" value="Start">
+    </div>
+
+    <div></div>
+
+    <div id="form-fill"></div>
+
   </form>
+
+
+  <footer class="container">
+    <div id="ft-text">stopa</div>
+  </footer>
 {% endblock %}

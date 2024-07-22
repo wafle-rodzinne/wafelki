@@ -36,7 +36,7 @@ class Streamer():
 
     def requestAvatar(self):
         req = str(requests.get(f'https://www.twitch.tv/{self.name}').content)
-        tries = 3
+        tries = 10
 
         while req.find('<meta property="og:image" content="') == -1 and tries > 0:
             req = str(requests.get(f'https://www.twitch.tv/{self.name}'))
@@ -44,13 +44,19 @@ class Streamer():
 
         if req.find('<meta property="og:image" content="') == -1:
             from flask import url_for
-            return url_for('static', filename='img/missing_avatar.jpg')
+            return url_for('static', filename='img/missing_avatar.png')
 
         trash, trash_content = req.split('<meta property="og:image" content="')
         content_with_trash   = trash_content.split('"/>')
         content              = content_with_trash[0]
 
         return content
+
+    def requestPointsName(self):
+        req = requests.get(f'https://api.streamelements.com/kappa/v2/loyalty/{self.id}')
+        if req:
+            return req.json()['loyalty']['name']
+        return 'punkty'
 # ================================================================================================
 
 # =========================================== DB SELECT ==========================================

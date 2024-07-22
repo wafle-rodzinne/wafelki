@@ -5,13 +5,14 @@
 {% endblock %}
 
 {% block content %}
-    <div>
+    <div class="container">
       <label>
-        <image src="{{ session['streamer_avatar'] }}" height="64px" width="64px">
-        {{session['streamer_name']}} - {{session['result']}}/{{session['max_points']}}
+        <image src="{{ session['streamer_avatar'] }}" height="128px" width="128px"><br>
+        <h2>{{session['streamer_name']}}</h2>
+        <h2>{{session['result']}}/{{session['max_points']}}</h2>
       </label>
     </div>
-    <div>
+    <div class="container">
       <table>
         <tr>
           <th>Punkty</th><th>Litera</th><th>Użytkownik</th><th>Info</th>
@@ -24,11 +25,11 @@
           {% set msg  = session[info] %}
 
           {% if session['mode'] == 'messages' %}
-            {% set endmsg = 'wysyłając dotychczas na czacie ' + session[topv] + ' wiadomości.' %}
+            {% set endmsg = 'wysyłając na czacie łącznie ' + session[topv] + ' wiadomości.' %}
           {% elif session['mode'] == 'watchtime' %}
             {% set endmsg = 'oglądając wytrwale przez ' + session[topv] + ' godzin.' %}
           {% elif session['mode'] == 'points' %}
-            {% set endmsg = 'zbierając zatrważające ' + session[topv] + '(nazwa punktacji).' %}
+            {% set endmsg = 'zbierając zatrważające ' + session[topv] + ' ' + session['points_name'] %}
           {% endif %}
           
           {% if session[info] == 'exact' %}
@@ -55,8 +56,8 @@
           </tr>
         {% endfor %}
       </table>
+      <form method="post">
+        <input type="submit" value="Powrót">
+      </form>
     </div>
-  <form method="post">
-    <input type="submit" value="Powrót">
-  </form>
 {% endblock %}

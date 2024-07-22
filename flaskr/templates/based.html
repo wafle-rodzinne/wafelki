@@ -1,22 +1,77 @@
 <!doctype html>
 <title >{% block title %}{% endblock %}</title>
-<link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-<nav>
-  <h1>
-    <a href="{{ url_for('alfabet.index') }}"> Alfabet </a>
-  </h1>
-</nav>
-<section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
-</section>
-<footer>
-  stopa
-</footer>
+
+<div class="container" id="container">
+  <nav class="container" id="nav-bar">
+    <h1>
+      <a href="{{ url_for('alfabet.index') }}"> 
+        <div class="container" id="nav-bar">
+          <image src="{{ url_for('static', filename='img/wafelki.png') }}" id="nav-bar-image">
+          Wafelki
+        </div> 
+      </a>
+    </h1>
+    <div class="container" id="nav-menu">
+      <a id="nav-menu-fill"></a>
+      <a href="{{ url_for('alfabet.index') }}" id="nav-menu-item"> ABC Szczura </a>
+    </div>
+  </nav>
+
+  <div class="container" id="body-container">
+    <div id="body-side-fill">
+        {% for message in get_flashed_messages() %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="container" id="body-content">
+
+      <section class="container">
+        <header>
+          {% block header %}{% endblock %}
+        </header>
+        {% block content %}{% endblock %}
+      </section>
+
+    </div>
+
+    <div class="container" id="body-side-fill">
+      {% set rec_channels = ['AlbiSuperBryka', 'Toczkens', 'RaczQ', 'PrawdziwyJezus',
+                             'Teskacz', 'Niezwykła Oferta!!!', 'Niezwykła Oferta!!!',
+                             'Niezwykła Oferta!!!', 'Niezwykła Oferta!!!', 'Niezwykła Oferta!!!'] %}
+      {% set rec_offers = ['https://www.biedronka.pl/pl/biedronkowe-oszczednosci',
+                           'https://www.lidl.pl/q/query/wyprzedaz',
+                           'https://www.zabka.pl/gazetka-promocyjna/'] %}
+      <div id="rec-title">Polecane Kanały</div>
+
+      <div id="rec-content">
+
+        <div class="recommendations">
+            {% for channel in rec_channels %}
+              {% if channel == 'Niezwykła Oferta!!!' %}
+                {% set href = rec_offers|random %}
+              {% else %}
+                {% set href = 'https://www.twitch.tv/' + channel %}
+              {% endif %}
+              <a href="{{ href }}" class="rec-chan">{{ channel }}</a>
+            {% endfor %}
+        </div>
+
+        <div class="recommendations">
+          {% for channel in rec_channels %}
+            {% if channel == 'Niezwykła Oferta!!!' %}
+              {% set href = rec_offers|random %}
+            {% else %}
+              {% set href = 'https://www.twitch.tv/' + channel %}
+            {% endif %}
+            <a href="{{ href }}" class="rec-chan">{{ channel }}</a>
+          {% endfor %}
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

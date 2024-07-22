@@ -6,13 +6,14 @@
 
 {% block content %}
   <form method="post">
-    <div>
-      <label><image src="{{ session['streamer_avatar'] }}" height="64px" width="64px">{{ session.streamer_name }}</label>
+    <div class="container">
+      <image src="{{ session['streamer_avatar'] }}" height="64px" width="64px">
+      <div id="label-username">{{ session.streamer_name }}</div>
     </div>
-    <div>
-      <input type="submit" name="messages" value="Messages">
-      <input type="submit" name="watchtime" value="Watchtime">
-      <input type="submit" name="points" value="Points">
+    <div class="container" id="form-input">
+      <input id="submit-mode-1" type="submit" name="messages" value="Messages">
+      <input id="submit-mode-2" type="submit" name="watchtime" value="Watchtime">
+      <input id="submit-mode-3" type="submit" name="points" value="Points">
     </div>
   </form>
 {% endblock %}

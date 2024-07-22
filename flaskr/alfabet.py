@@ -23,26 +23,28 @@ def index():
         username = request.form['username']
 
         if not username:
-            error = 'Username is required.'
+            error = 'Missing username. '
+            flash('Musisz wpisać nazwę kanału. Dzięki :D')
         
         streamer = Streamer(username)
         
-        if not streamer.requestId():
-            error = 'Missing streamer id'
-        if not streamer.requestChatStats():
-            error = 'Missing stats'
+        if not streamer.requestId() and username:
+            error = 'Missing username id. '
+            flash('Fajnie jakby taki kanał chociaż istniał...')
+        elif not streamer.requestChatStats and username():
+            error = 'Missing stats. '
+            flash('Streamelements zawiódł... Spróbuj za chwilę może odpowie.')
 
         if error is None:
             session.clear()
             session['streamer_name'] = streamer.name
             session['streamer_avatar'] = streamer.avatar
+            session['points_name'] = streamer.requestPointsName()
 
             db = get_db()
             streamer.dbInsert(db)
 
             return redirect(url_for("alfabet.test", streamer_name=streamer.name))
-
-        flash(error)
 
     return render_template('alfabet/index.html')
 
@@ -55,6 +57,10 @@ def test(streamer_name):
     session['alphabet'] = alphabet
     session['alpha']    = alphabet[:13]
     session['bet']      = alphabet[13:]
+
+    if session['streamer_avatar'] == url_for('static', filename='img/missing_avatar.png'):
+        flash('Będzie brakować avataru...')
+        flash('Spróbuj ponownie wybrać kanał może pomoże.')
     
     if not 'streamer_name' in session:
         return redirect(url_for("alfabet.index"))
@@ -62,18 +68,23 @@ def test(streamer_name):
     if request.method == 'POST':
         error = None
 
+
         if error is None:
             mode = 'alfabet/game.html'
 
             if 'messages' in request.form:
+                print('messages')
                 session['mode'] = 'messages'
             elif 'watchtime' in request.form:
+                print('watchtime')
                 session['mode'] = 'watchtime'
             elif 'points' in request.form:
+                print('points')
                 session['mode'] = 'points'
             elif 'mixed' in request.form:
                 session['mode'] = 'mixed'
             else:
+                print('gamingo')
                 # to mogla by byc funkcja
                 answers = []
                 for letter in alphabet:
