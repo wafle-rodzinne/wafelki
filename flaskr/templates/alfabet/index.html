@@ -18,6 +18,8 @@
       <input id="submit-start" type="submit" value="Start">
     </div>
 
+    <label id="label-info">Streamelements daje dostęp do statystyk kanału tylko w trakcie streama, więc upewnij się że ta osoba właśnie streamuje.</label>
+
     <div></div>
 
     <div id="form-fill"></div>
@@ -33,7 +35,6 @@
   const submit_start = document.getElementById('submit-start');
 
   submit_start.addEventListener('click', () => {
-    console.log('1')
     const form_to_hide = document.getElementById('form-to-hide');
     const loading_gif  = document.getElementById('loading-gif');
 

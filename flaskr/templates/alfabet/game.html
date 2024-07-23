@@ -6,34 +6,40 @@
 
 {% block content %}
   <form method="post" class="container">
-    <div class="container">
+    <div class="container" id="form-avatar">
       <image src="{{ session['streamer_avatar'] }}" height="64px" width="64px">
       <div id="label-username">{{ session.streamer_name }}</div>
     </div>
     <div class="container" id="table-container">
-        <table class="container">
+        <table>
             {% for i in range(13) %}
-            <tr>
+            {% if i == 0 %}
+              {% set first_row = '-first' %}
+            {% endif %}
+            <tr class="container" id="table-row{{first_row}}">
+              <th class="container" id="table-col">
+                <div class="table-letter">
+                  {{ session.alpha[i] }}
+                </div>
+                <div class="table-user">
+                  <input class="table-input" name="{{ session.alpha[i] }}-usr" id="{{ session.alpha[i] }}-usr">
+                </div>
+              </th>
 
-              <th class="table-letter">
-                {{ session.alpha[i] }}
-              </th>
-              <th class="table-user">
-                <input class="table-input" name="{{ session.alpha[i] }}-usr" id="{{ session.alpha[i] }}-usr">
-              </th>
-
-              <th class="table-letter">
-                {{ session.bet[i] }}
-              </th>
-              <th class="table-user">
-                <input class="table-input" name="{{ session.bet[i] }}-usr" id="{{ session.bet[i] }}-usr">
+              <th class="container" id="table-col">
+                <div class="table-letter">
+                  {{ session.bet[i] }}
+                </div>
+                <div class="table-user">
+                  <input class="table-input" name="{{ session.bet[i] }}-usr" id="{{ session.bet[i] }}-usr">
+                </div>
               </th>
 
             </tr>
             {% endfor %}
         </table>
         <div id="table-submit">
-          <input id="submit-start" type="submit" value="Result">
+          <input id="submit-table" type="submit" value="Result">
         </div>
     </div>
   </form>

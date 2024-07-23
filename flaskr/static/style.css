@@ -22,6 +22,7 @@ body {
     margin: 0;
     background-color: var(--backgroud);
     height: 100%;
+    overflow: hidden;
 }
 
 #container {
@@ -34,13 +35,20 @@ body {
 }
 
 #body-side-fill {
-    width: 25%;
+    width: 35%;
     flex-grow: 1;
 }
 
 #body-content {
-    width: 50%;
+    width: 100%;
     background-color: var(--col-5);
+    max-height: 100vh;
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+#body-content::-webkit-scrollbar {
+    display: none;
 }
 
 nav {
@@ -134,6 +142,13 @@ label {
     font: 1.5em sans-serif;
 }
 
+#label-info {
+    padding-left: 10%;
+    padding-right: 10%;
+    color: rgba(255, 255, 255, 0.212);
+    font: 1.2em sans-serif;
+}
+
 section {
     height: 100%;
     border-left: 2px solid var(--col-11);
@@ -141,10 +156,10 @@ section {
 }
 
 form {
-    justify-content: flex-start;
+    justify-content: space-between;
     flex-grow: 1;
     border-bottom: 2px solid var(--col-11);
-    margin-top: 15%;
+    height: 100%;
 }
 
 #form-fill {
@@ -159,6 +174,12 @@ form {
     width: auto;
     margin-left: auto;
     margin-right: auto;
+}
+
+#form-avatar {
+    height: auto;
+    margin-top: 2.5%;
+    margin-bottom: 2.5%;
 }
 
 footer {
@@ -190,6 +211,7 @@ footer {
     /*border-radius: 5px;*/
     border-color: green;
     background-color: green;
+    font: 1em sans-serif;
     color: white;
 }
 
@@ -237,6 +259,25 @@ footer {
     color: white;
     font: 1.5em sans-serif;
 }
+
+#submit-table {
+    width: 26%;
+    height: 100%;
+    /*border-radius: 5px;*/
+    background-color: rgba(255, 255, 255, 0);
+    border-width: 1;
+    border-style: solid;
+    border-color: green;
+    font: 1em sans-serif;
+    color: green;
+}
+#submit-table:hover {
+    color: white;
+}
+#submit-table:active {
+    color: gray;
+}
+
 
 .flash {
     border-radius: 5px;
@@ -302,38 +343,72 @@ footer {
 
 
 #table-container {
-    margin-top: 5%;
-    height: 100%;
+    flex-grow: 1;
+    height: auto;
+    justify-content: space-between;
+}
+
+#table-row {
+    margin-left: 2%;
+    margin-right: 2%;
+    flex-direction: row;
+    justify-content: center;
+    border-bottom: 4px solid var(--col-11);
+    border-right: 6px solid var(--col-11);
+}
+
+#table-row-first {
+    width: auto;
+    margin-left: 2%;
+    margin-right: 2%;
+    flex-direction: row;
+    justify-content: center;
+    border-bottom: 4px solid var(--col-11);
+    border-right: 6px solid var(--col-11);
+    border-top: 4px solid var(--col-11);
+}
+
+#table-col {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    flex-direction: row;
+    justify-content: flex-start;
 }
 
 .table-letter {
+    width: 6%;
+    padding: 1%;
     background-color: var(--col-7);
     color: white;
     font: 1.2em sans-serif;
+    border-left: 4px solid var(--col-11);
 }
 
 .table-user {
-    margin-left: 2%;
-    margin-right: 2%;
+    padding: 0;
+    width: 100%;
+    /*padding-bottom: 2px;*/
 }
 
 .table-input {
-    margin: auto;
+    height: 100%;
+    width: 100%;
+    padding: 0;
     outline: none;
     background-color: var(--col-7);
     color: white;
     font: 1.6em sans-serif;
-    height: 100%;
-    width: 100%;
+    top: 0;
+    left: 0;
     border-radius: 0%;
     border: none;
     border-bottom: 2px solid var(--col-11);
+    border-bottom: 0px;
+    border-left: 2px solid var(--col-11);
 }
 
 #table-submit {
-    margin-top: 4%;
-    margin-bottom: 4%;
-    flex-grow: 1;
     height: 20%;
 }
 
@@ -342,9 +417,6 @@ footer {
     border-bottom: 2px solid var(--col-11);
     padding-bottom: 20%;
     display: none;
-}
-
-#form-to-hide {
 }
 
 #joel {
