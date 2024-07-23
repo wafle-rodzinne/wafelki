@@ -5,7 +5,11 @@
 {% endblock %}
 
 {% block content %}
-  <form class="container" method="post">
+  <div id="loading-gif" class="container">
+    <image src="{{ url_for('static', filename='img/loading.gif') }}" id="joel">
+    <label>Ładowanie statystyk. Zwykle trwa do 30 sekund.</label>
+  </div>
+  <form class="container" method="post" id="form-to-hide">
 
     <label for="username" id="label-username">Podaj nazwę kanału</label>
 
@@ -24,4 +28,19 @@
   <footer class="container">
     <div id="ft-text">stopa</div>
   </footer>
+  
+<script>
+  const submit_start = document.getElementById('submit-start');
+
+  submit_start.addEventListener('click', () => {
+    console.log('1')
+    const form_to_hide = document.getElementById('form-to-hide');
+    const loading_gif  = document.getElementById('loading-gif');
+
+    if (form_to_hide.style.display !== 'none') {
+      form_to_hide.style.display = 'none';
+      loading_gif.style.display = 'flex';
+    }
+  });
+</script>
 {% endblock %}

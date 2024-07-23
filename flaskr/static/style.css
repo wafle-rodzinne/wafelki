@@ -336,3 +336,22 @@ footer {
     flex-grow: 1;
     height: 20%;
 }
+
+#loading-gif {
+    flex-grow: 1;
+    border-bottom: 2px solid var(--col-11);
+    padding-bottom: 20%;
+    display: none;
+}
+
+#form-to-hide {
+}
+
+#joel {
+    margin: 0;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    width: 80%;
+    height: auto;
+}
