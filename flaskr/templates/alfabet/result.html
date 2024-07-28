@@ -1,21 +1,36 @@
 {% extends 'based.html' %}
 
 {% block header %}
-  <h1>{% block title %}Wynik{% endblock %}</h1>
+  <h1 id="header-title">{% block title %}Wynik{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-      <label>
-        <image src="{{ session['streamer_avatar'] }}" height="128px" width="128px"><br>
-        <h2>{{session['streamer_name']}}</h2>
-        <h2>{{session['result']}}/{{session['max_points']}}</h2>
-      </label>
+    <div id="result-container" class="container">
+      <image id="result-image" src="{{ session['streamer_avatar'] }}">
+      <div id="result-info" class="container">
+        <div id="label-username">{{ session.streamer_name }}</div>
+        <h2>Wynik: <a>{{session['result']}}/{{session['max_points']}}</a></h2> 
+      </div>
+      <div id="result-message">
+        {% if session['result'] < (5/10 * session['max_points']) %}
+          Słabiutka wiadomość tutaj
+        {% elif session['result'] < (9/10 * session['max_points']) %}
+          Nie jest źle, ale spodziewałem się więcej po tobie. 
+          Postaraj się częściej zerkać na czat a na pewno widzowie to docenią ($$$) 
+          i wyjdzie ci to na dobre.
+        {% else %}
+          Gratuluję świetnego wyniku. Widać że nie jest ci to obojętne co dzieje się na czacie 
+          i znasz swoich widzów na wylot. Trzymaj tak dalej a zajdziesz daleko.
+        {% endif %}
+      </div>
     </div>
-    <div class="container">
-      <table>
-        <tr>
-          <th>Punkty</th><th>Litera</th><th>Użytkownik</th><th>Info</th>
+    <div class="container" id="table-container">
+      <table id="table-result">
+        <tr class="container" id="table-row-first">
+          <th id="table-result-point" class="container">Punkty</th>
+          <th id="table-result-letter" class="container">Litera</th>
+          <th id="table-result-user" class="container">Użytkownik</th>
+          <th id="table-result-info" class="container">Info</th>
         </tr>
         {% for letter in session.alphabet %}
           {% set usr  = letter + '-usr'  %}
@@ -25,39 +40,54 @@
           {% set msg  = session[info] %}
 
           {% if session['mode'] == 'messages' %}
-            {% set endmsg = 'wysyłając na czacie łącznie ' + session[topv] + ' wiadomości.' %}
+            {% set msg_1 = 'wysyłając na czacie łącznie ' %}
+            {% set msg_2 = ' wiadomości.' %}
           {% elif session['mode'] == 'watchtime' %}
-            {% set endmsg = 'oglądając wytrwale przez ' + session[topv] + ' godzin.' %}
+            {% set msg_1 = 'oglądając wytrwale przez ' %}
+            {% set msg_2 = '' %}
           {% elif session['mode'] == 'points' %}
-            {% set endmsg = 'zbierając zatrważające ' + session[topv] + ' ' + session['points_name'] %}
+            {% set msg_1 = 'zbierając zatrważające ' %}
+            {% set msg_2 = ' ' + session['points_name'] %}
           {% endif %}
           
           {% if session[info] == 'exact' %}
             {% set point = '1' %}
-            {% set endmsg = session[topu] + ' ' %}
+            {% set msg_0 = ' i jak najbardziej zasługuje na pierwsze miejsce, ' %}
           {% elif session[info] == 'close' %}
             {% set point = '0.5' %}
-            {% set endmsg = session[topu] + ' ' %}
+            {% set msg_0 = ' nie ma ci tego za złe, ' %}
           {% elif session[info] == 'far' %}
             {% set point = '0' %}
-            {% set endmsg = session[topu] + ' ' %}
+            {% set msg_0 = ' to osoba która angażowała się o wiele więcej, ' %}
           {% elif session[info] == 'noanswer' %}
             {% set point = '0' %}
-            {% set endmsg = session[topu] + ' tego nie widzi ' + endmsg %}
+            {% set msg_0 = ' tego nie widzi, ' %}
           {% elif session[info] == 'nouser' %}
             {% set point = '0' %}
-            {% set endmsg = '' %}
+            {% set msg_0 = '' %}
           {% else %}{# unknown #}
             {% set point = '0' %}
-            {% set endmsg = session[topu] + ' która wspiera cię ' + endmsg %}
+            {% set msg_0 = ' która wspiera cię, ' %}
           {% endif %}
-          <tr>
-            <th>{{ point }}</th><th>{{ letter }}</th><th>{{ session[usr] }}</th><th>{{ session[msg] }}{{ endmsg }}</th>
+
+          
+          <tr class="container" id="table-row">
+            <th id="table-result-point" class="container">{{ point }}</th>
+            <th id="table-result-letter" class="container">{{ letter }}</th>
+            <th id="table-result-user" class="container">{{ session[usr] }}</th>
+            <th id="table-result-message">
+              {{session[msg]}}
+              {% if session[info] != 'nouser' %}
+                <a class="a-user">{{session[topu]}}</a>
+                {{msg_0}}{{msg_1}}
+                <a class="a-value">{{session[topv]}}</a>
+                {{msg_2}}</th>
+              {% endif %}
           </tr>
         {% endfor %}
       </table>
-      <form method="post">
-        <input type="submit" value="Powrót">
+      <form id="table-result-form" class="container" method="post">
+        <input id="table-result-submit" type="submit" value="Powrót na Start">
       </form>
     </div>
 {% endblock %}

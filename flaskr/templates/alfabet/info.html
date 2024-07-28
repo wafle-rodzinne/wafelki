@@ -1,0 +1,27 @@
+{% extends 'based.html' %}
+
+{% block header %}
+  <h1 id="header-title">{% block title %}INFO{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div id="info-body" class="container">
+    <h1>Informacje ogólne</h1>
+    <div id="info-text">
+        Amatorski projekt więc przygotuj się, że chociaż raz coś się zorpierdoli 
+        albo za miesiąc zniknie, bo hosting jest darmowy. 
+        To co jest istotne to statystki są udostępniane przez streamelements 
+        jedynie w trakcie trwania streama a pobieranie statów z bazy danych nie 
+        jest zaimplementowane (nie chciało mi się już 💀), dlatego bez odpalonego 
+        streama nie ma grania. Jak masz zapędy masochistyczne to masz 
+        <a href="https://github.com/wafle-rodzinne/wafelki">tu</a> link do githuba.
+
+    </div>
+    <h1>Informacje o ABC Szczurze</h1>
+    <div id="info-text">
+        Co tu dużo gadać, wpisujesz nazwe swojego kanału i zgadujesz widza na każdą literę, 
+        w jednej z kategorii (Wysłane wiadomości, Czas oglądania, Punkty kanału).
+    </div>
+    <div id="form-fill"></div>
+</div>
+{% endblock %}

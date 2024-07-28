@@ -20,7 +20,7 @@
   </nav>
 
   <div class="container" id="body-container">
-    <div id="body-side-fill">
+    <div id="body-left-panel">
         {% for message in get_flashed_messages() %}
           <div class="flash">{{ message }}</div>
         {% endfor %}
@@ -29,18 +29,27 @@
     <div class="container" id="body-content">
 
       <section class="container">
-        <header>
+        <header class="container" id="header">
+          <button id="hide-left-panel">
+            <image id="hide-left-panel-img" src="{{ url_for('static', filename='img/hide-left-panel.png') }}">
+          </button>
           {% block header %}{% endblock %}
+          <button id="hide-right-panel">
+            <image id="hide-right-panel-img" src="{{ url_for('static', filename='img/hide-right-panel.png') }}">
+          </button>
         </header>
         {% block content %}{% endblock %}
+        
+        <footer class="container">
+          <a href="{{ url_for('alfabet.info') }}"><div id="ft-text">Info</div></a>
+        </footer>
       </section>
 
     </div>
 
-    <div class="container" id="body-side-fill">
+    <div class="container" id="body-right-panel">
       {% set rec_channels = ['AlbiSuperBryka', 'Toczkens', 'RaczQ', 'PrawdziwyJezus',
-                             'Teskacz', 'Niezwykła Oferta!!!', 'Niezwykła Oferta!!!',
-                             'Niezwykła Oferta!!!', 'Niezwykła Oferta!!!', 'Niezwykła Oferta!!!'] %}
+                             'Teskacz', 'Niesamowita Oferta!!!'] %}
       {% set rec_offers = ['https://www.biedronka.pl/pl/biedronkowe-oszczednosci',
                            'https://www.lidl.pl/q/query/wyprzedaz',
                            'https://www.zabka.pl/gazetka-promocyjna/'] %}
@@ -55,7 +64,9 @@
               {% else %}
                 {% set href = 'https://www.twitch.tv/' + channel %}
               {% endif %}
-              <a href="{{ href }}" class="rec-chan">{{ channel }}</a>
+              <div class="rec-chan">
+                <a href="{{ href }}">{{ channel }}</a>
+              </div>
             {% endfor %}
         </div>
 
@@ -66,7 +77,9 @@
             {% else %}
               {% set href = 'https://www.twitch.tv/' + channel %}
             {% endif %}
-            <a href="{{ href }}" class="rec-chan">{{ channel }}</a>
+            <div class="rec-chan">
+              <a href="{{ href }}">{{ channel }}</a>
+            </div>
           {% endfor %}
         </div>
 
@@ -75,3 +88,35 @@
     </div>
   </div>
 </div>
+<script>
+  
+  const hide_left_panel  = document.getElementById('hide-left-panel');
+  hide_left_panel.addEventListener('click', () => {
+    const left_panel = document.getElementById('body-left-panel');
+    const img = document.getElementById('hide-left-panel-img');
+
+    if (left_panel.style.display !== 'none') {
+      left_panel.style.display = 'none';
+      img.style.transform = 'scaleX(-1)';
+    }
+    else {
+      left_panel.style.display = 'flex';
+      img.style.transform = 'scaleX(1)';
+    }
+  });
+
+  const hide_right_panel = document.getElementById('hide-right-panel');
+  hide_right_panel.addEventListener('click', () => {
+    const right_panel = document.getElementById('body-right-panel');
+    const img = document.getElementById('hide-right-panel-img');
+
+    if (right_panel.style.display !== 'none') {
+      right_panel.style.display = 'none';
+      img.style.transform = 'scaleX(-1)';
+    }
+    else {
+      right_panel.style.display = 'flex';
+      img.style.transform = 'scaleX(1)';
+    }
+  });
+</script>

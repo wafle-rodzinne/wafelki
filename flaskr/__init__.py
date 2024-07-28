@@ -1,11 +1,11 @@
 import os
 
-from flask import (Flask, redirect, url_for)
+from flask import (Flask, redirect, url_for, render_template)
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY=os.environ.get("SECRET_KEY"),
+        SECRET_KEY='dev',#os.environ.get("SECRET_KEY"),
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
 
@@ -20,7 +20,8 @@ def create_app(test_config=None):
 
     @app.route('/')
     def siema():
-        return redirect(url_for("alfabet.index"))
+        return redirect(url_for('alfabet.index'))
+        #return render_template('index.html')
 
 
     from . import alfabet

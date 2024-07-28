@@ -8,6 +8,10 @@ alphabetical_list = {'a':[],'b':[],'c':[],
                      's':[],'t':[],'u':[],
                      'v':[],'w':[],'x':[],
                      'y':[],'z':[]}
+from difflib import SequenceMatcher
+
+def similar(a, b):
+    return SequenceMatcher(None, a, b).ratio()
 
 def game(db, streamer_name, answers, mode): # main
     alpha_list = getAlphabeticalList(db, streamer_name, mode)
@@ -33,8 +37,9 @@ def game(db, streamer_name, answers, mode): # main
             continue
 
         for rank, top_letter_user in enumerate(alpha_list[letter]):
-            if answer == top_letter_user['user']:
+            if similar(answer, top_letter_user['user']) >= 0.75:
                 answer_position = rank
+                break
         category, max_points = getAnswerCategory(answer_position, top_letter_count, max_points)
         
         results.update({letter : category})

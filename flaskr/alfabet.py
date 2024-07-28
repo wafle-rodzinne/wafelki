@@ -52,15 +52,20 @@ def index():
             session['streamer_name'] = streamer.name
             session['streamer_avatar'] = streamer.avatar
             session['points_name'] = streamer.requestPointsName()
+            streamer = None
 
-
-            return redirect(url_for("alfabet.test", streamer_name=streamer.name))
+            return redirect(url_for("alfabet.test", streamer_name=session['streamer_name']))
 
     return render_template('alfabet/index.html')
 
 
 @bp.route('/<string:streamer_name>', methods=('GET', 'POST'))
 def test(streamer_name):
+
+    if not 'streamer_name' in session:
+        flash('Ups... Coś poszło nie tak jak miało pójść. Spróbuj od początku.')
+        return redirect(url_for("alfabet.index"))
+
     mode = 'alfabet/mode.html'
     from string import ascii_uppercase
     alphabet = ascii_uppercase
@@ -72,8 +77,6 @@ def test(streamer_name):
         flash('Będzie brakować avataru...')
         flash('Spróbuj ponownie wybrać kanał może pomoże.')
     
-    if not 'streamer_name' in session:
-        return redirect(url_for("alfabet.index"))
 
     if request.method == 'POST':
         error = None
@@ -83,19 +86,14 @@ def test(streamer_name):
             mode = 'alfabet/game.html'
 
             if 'messages' in request.form:
-                print('messages')
                 session['mode'] = 'messages'
             elif 'watchtime' in request.form:
-                print('watchtime')
                 session['mode'] = 'watchtime'
             elif 'points' in request.form:
-                print('points')
                 session['mode'] = 'points'
             elif 'mixed' in request.form:
                 session['mode'] = 'mixed'
             else:
-                print('gamingo')
-                # to mogla by byc funkcja
                 answers = []
                 for letter in alphabet:
                     usr = request.form[f'{letter}-usr']
@@ -121,7 +119,7 @@ def test(streamer_name):
                         hours = topv / 60.0
                         days  = hours / 24.0
                         if days >= 1.0:
-                            topv = f'{round(days)} dni i {round(hours % 24)}'
+                            topv = f'{round(days)} dni i {round(hours % 24)} godzin.'
 
                     session[f'{letter}-topv'] = f'{topv}'
 
@@ -129,31 +127,34 @@ def test(streamer_name):
                         session['result'] += 1.0
                     elif results[letter.lower()] == 'close':
                         session['result'] += 0.5
-                # ughh dużo linijek kodu z góry przepraszam
 
-                return redirect(url_for("alfabet.result"))
+
+                return redirect(url_for("alfabet.result", streamer_name=streamer_name))
         else:
             flash(error)
 
     return render_template(mode)
 
 
-@bp.route('/result', methods=('GET', 'POST'))
-def result():
+@bp.route('/<string:streamer_name>/wynik', methods=('GET', 'POST'))
+def result(streamer_name):
     if not 'streamer_name' in session:
-        print("Brak streamera")
+        flash('Ups... Coś poszło nie tak jak miało pójść. Spróbuj od początku.')
         return redirect(url_for("alfabet.index"))
-
-    session['exact']     = '(wiadomosc za zgadniecie)'
-    session['close']     = '(wiadomosc za bycie blisko)' # top 5
+    # SKOŃCZYĆ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    session['exact']     = 'Faktycznie to '
+    session['close']     = 'Niestety nie jest to najlepsza odpowiedź, ale było blisko. \
+                            Mam nadzieję, że ' 
     session['unknown']    = 'Albo nie umiesz pisać, albo masz za sobą 24h streama, \
                             bo to nie przypomina żadnego nicku z twojego czatu, w top 100. \
                             Jak już dojdziesz do siebie to może przypomnisz sobie\
-                             o takiej osobie jak ' # top < 5 and answer unknown
-    session['far']       = '(wiadomosc za bycie daleko💀)' # top >= 5 and answer unknown
+                             o takiej osobie jak '
+    session['far']       = 'Jeśli to ktoś z topki donatorów, to zachęć tę osobę \
+                            do trochę większego zaangażowania. Dla twojej wiadomości, '
     session['noanswer']  = 'W jakiś sposób szanuję to, że nawet nie udajesz, \
                             że masz widzów w dupie. Szkoda tylko, że '
-    session['nouser']    = '(wiadomosc za brak widza)'
+    session['nouser']    = 'Musisz zachęcić więcej widzów na tę literę, bo okazuje się, \
+                            że nie ma ani jednego w top 100.'
 
     if request.method == 'POST':
         error = None
@@ -165,3 +166,10 @@ def result():
         flash(error)
 
     return render_template('alfabet/result.html')
+
+
+@bp.route('/info', methods=('GET', 'POST'))
+def info():
+    if request.method == 'POST':
+        return redirect(url_for('alfabet.index'))
+    return render_template('alfabet/info.html')

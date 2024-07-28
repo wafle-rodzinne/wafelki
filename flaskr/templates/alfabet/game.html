@@ -1,7 +1,7 @@
 {% extends 'based.html' %}
 
 {% block header %}
-  <h1>{% block title %}Test - messages{% endblock %}</h1>
+  <h1 id="header-title">{% block title %}Test - messages{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@
       <div id="label-username">{{ session.streamer_name }}</div>
     </div>
     <div class="container" id="table-container">
-        <table>
+        <table class="table">
             {% for i in range(13) %}
             {% if i == 0 %}
               {% set first_row = '-first' %}
@@ -22,7 +22,7 @@
                   {{ session.alpha[i] }}
                 </div>
                 <div class="table-user">
-                  <input class="table-input" name="{{ session.alpha[i] }}-usr" id="{{ session.alpha[i] }}-usr">
+                  <input class="table-input" name="{{ session.alpha[i] }}-usr" id="{{ session.alpha[i] }}-usr" maxlength="25">
                 </div>
               </th>
 
@@ -31,7 +31,7 @@
                   {{ session.bet[i] }}
                 </div>
                 <div class="table-user">
-                  <input class="table-input" name="{{ session.bet[i] }}-usr" id="{{ session.bet[i] }}-usr">
+                  <input class="table-input" name="{{ session.bet[i] }}-usr" id="{{ session.bet[i] }}-usr" maxlength="25">
                 </div>
               </th>
 
@@ -39,7 +39,7 @@
             {% endfor %}
         </table>
         <div id="table-submit">
-          <input id="submit-table" type="submit" value="Result">
+          <input id="submit-table" type="submit" value="Potwierdzam">
         </div>
     </div>
   </form>

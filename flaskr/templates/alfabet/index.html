@@ -1,7 +1,7 @@
 {% extends 'based.html' %}
 
 {% block header %}
-  <h1>{% block title %}ABC Szczura{% endblock %}</h1>
+  <h1 id="header-title">{% block title %}ABC Szczura{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -14,7 +14,7 @@
     <label for="username" id="label-username">Podaj nazwę kanału</label>
 
     <div class="container" id="form-input">
-      <input name="username" id="username">
+      <input name="username" id="username" maxlength="25">
       <input id="submit-start" type="submit" value="Start">
     </div>
 
@@ -25,11 +25,6 @@
     <div id="form-fill"></div>
 
   </form>
-
-
-  <footer class="container">
-    <div id="ft-text">stopa</div>
-  </footer>
   
 <script>
   const submit_start = document.getElementById('submit-start');
@@ -43,5 +38,7 @@
       loading_gif.style.display = 'flex';
     }
   });
+
+  
 </script>
 {% endblock %}

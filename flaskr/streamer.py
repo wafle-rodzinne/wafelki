@@ -102,7 +102,6 @@ class Streamer():
 
     def dbInsertChannels(self, db):
         if not self.name or not self.id:
-            print('name or id', self.name, self.id)
             return False # Error
         try:
             db.execute(
@@ -111,7 +110,6 @@ class Streamer():
             )
             db.commit()
         except db.IntegrityError:
-            print(db.IntegrityError)
             return False # Error
         return True
 
