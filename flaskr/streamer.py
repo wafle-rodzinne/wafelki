@@ -122,7 +122,8 @@ class Streamer():
             )
             db.commit()
         except db.IntegrityError:
-            pass # Error
+            return False # Error
+        return True
 
     def dbInsertChatters(self, db):
         if not self.chatters or not self.id:
@@ -166,7 +167,7 @@ class Streamer():
             )
             db.commit()
         except db.IntegrityError:
-            pass # Error
+            return False # error
 
         end = time()
         print(f' - Preparing time: {round((end - start)*100)}')
@@ -182,7 +183,7 @@ class Streamer():
             )
             db.commit()
         except db.IntegrityError:
-            pass # Error
+            return False # Error
         
     def dbInsertEmotes(self, db):
         if not self.sevenTVEmotes or not self.twitchEmotes or not self.id:
@@ -214,7 +215,7 @@ class Streamer():
             )
             db.commit()
         except db.IntegrityError:
-            pass # Error
+            return False # Error
 
         end = time()
         print(f' - Preparing time: {round((end - start)*100)}')

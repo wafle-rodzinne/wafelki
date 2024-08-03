@@ -1,19 +1,23 @@
 
-alphabetical_list = {'a':[],'b':[],'c':[],
-                     'd':[],'e':[],'f':[],
-                     'g':[],'h':[],'i':[],
-                     'j':[],'k':[],'l':[],
-                     'm':[],'n':[],'o':[],
-                     'p':[],'q':[],'r':[],
-                     's':[],'t':[],'u':[],
-                     'v':[],'w':[],'x':[],
-                     'y':[],'z':[]}
+
 from difflib import SequenceMatcher
+
+def prepareAlphaList():
+    alist = {'a':[],'b':[],'c':[],
+             'd':[],'e':[],'f':[],
+             'g':[],'h':[],'i':[],
+             'j':[],'k':[],'l':[],
+             'm':[],'n':[],'o':[],
+             'p':[],'q':[],'r':[],
+             's':[],'t':[],'u':[],
+             'v':[],'w':[],'x':[],
+             'y':[],'z':[]}
+    return alist
 
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
-def game(db, streamer_name, answers, mode): # main
+def game(db, streamer_name, answers, mode):
     alpha_list = getAlphabeticalList(db, streamer_name, mode)
     results = {}
     top1 = {}
@@ -48,6 +52,7 @@ def game(db, streamer_name, answers, mode): # main
 
 
 def getAlphabeticalList(db, streamer_name, column):
+    alphabetical_list = prepareAlphaList()
     top_entries = db.execute(
         f'SELECT chatter_name, {column} FROM chatters, channels_chatters, channels \
          WHERE channels.streamer == (?) \

@@ -44,7 +44,6 @@ def index():
             flash('Streamelements zawiódł... Spróbuj za chwilę może odpowie.')
         elif db_errors and username:
             error = 'Database insert error.'
-            print(db_errors)
             flash('Wystąpił problem z ładowaniem bazy danych, spróbuj ponownie.')
             flash('Jeśli problem się powtarza, odpuść. Może kiedyś naprawię.')
 
