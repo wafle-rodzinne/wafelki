@@ -59,7 +59,7 @@
 
         <div class="recommendations">
             {% for channel in rec_channels %}
-              {% if channel == 'Niezwykła Oferta!!!' %}
+              {% if channel == 'Niesamowita Oferta!!!' %}
                 {% set href = rec_offers|random %}
               {% else %}
                 {% set href = 'https://www.twitch.tv/' + channel %}
@@ -89,34 +89,85 @@
   </div>
 </div>
 <script>
+  const left_panel = document.getElementById('body-left-panel');
+  const img_left = document.getElementById('hide-left-panel-img');
+  const right_panel = document.getElementById('body-right-panel');
+  const img_right = document.getElementById('hide-right-panel-img');
+  var bar_status = 0;
+  if(parseInt(sessionStorage.getItem('bar status'))){
+    bar_status = parseInt(sessionStorage.getItem('bar status'));
+    console.log('session', sessionStorage.getItem('bar status'));
+  }
+  else{
+    bar_status = (bar_status === 0) ? bar_status : 0;
+    console.log('session', bar_status);
+  }
+  
+
+  function hideLeft() {
+      left_panel.style.display = 'none';
+      img_left.style.transform = 'scaleX(-1)';
+  }
+  function revealLeft() {
+      left_panel.style.display = 'flex';
+      img_left.style.transform = 'scaleX(1)';
+  }
+  function hideRight() {
+      right_panel.style.display = 'none';
+      img_right.style.transform = 'scaleX(-1)';
+  }
+  function revealRight() {
+      right_panel.style.display = 'flex';
+      img_right.style.transform = 'scaleX(1)';
+  }
+  function updateBarStatus(){
+    console.log(bar_status);
+    sessionStorage.setItem('bar status', bar_status);
+  }
+
+  if(bar_status.length == 0){
+    revealLeft();
+    revealRight();
+  }
+  else if(bar_status == 1){
+    hideLeft();
+  }
+  else if(bar_status == 2){
+    hideRight();
+  }
+  else if(bar_status == 3){
+    hideLeft();
+    hideRight();
+  }
+
   
   const hide_left_panel  = document.getElementById('hide-left-panel');
   hide_left_panel.addEventListener('click', () => {
-    const left_panel = document.getElementById('body-left-panel');
-    const img = document.getElementById('hide-left-panel-img');
 
     if (left_panel.style.display !== 'none') {
-      left_panel.style.display = 'none';
-      img.style.transform = 'scaleX(-1)';
+      hideLeft();
+      bar_status += 1;
+      updateBarStatus();
     }
     else {
-      left_panel.style.display = 'flex';
-      img.style.transform = 'scaleX(1)';
+      revealLeft();
+      bar_status -= 1;
+      updateBarStatus();
     }
   });
 
   const hide_right_panel = document.getElementById('hide-right-panel');
   hide_right_panel.addEventListener('click', () => {
-    const right_panel = document.getElementById('body-right-panel');
-    const img = document.getElementById('hide-right-panel-img');
 
     if (right_panel.style.display !== 'none') {
-      right_panel.style.display = 'none';
-      img.style.transform = 'scaleX(-1)';
+      hideRight();
+      bar_status += 2;
+      updateBarStatus();
     }
     else {
-      right_panel.style.display = 'flex';
-      img.style.transform = 'scaleX(1)';
+      revealRight();
+      bar_status -= 2;
+      updateBarStatus();
     }
   });
 </script>
