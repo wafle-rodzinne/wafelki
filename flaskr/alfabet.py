@@ -119,6 +119,8 @@ def test(streamer_name):
                         days  = hours / 24.0
                         if days >= 1.0:
                             topv = f'{round(days)} dni i {round(hours % 24)} godzin.'
+                        else:
+                            topv = f'{round(hours)} godzin'
 
                     session[f'{letter}-topv'] = f'{topv}'
 
