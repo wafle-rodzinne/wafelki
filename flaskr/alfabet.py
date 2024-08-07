@@ -1,13 +1,12 @@
 import functools
 import requests
-from threading import Thread
+from time import time
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 
 from flaskr.db import get_db
-
 
 from .streamer import Streamer
 from .game import game
@@ -51,7 +50,6 @@ def index():
             session['streamer_name'] = streamer.name
             session['streamer_avatar'] = streamer.avatar
             session['points_name'] = streamer.requestPointsName()
-            streamer = None
 
             return redirect(url_for("alfabet.test", streamer_name=session['streamer_name']))
 
@@ -60,14 +58,18 @@ def index():
 
 @bp.route('/<string:streamer_name>', methods=('GET', 'POST'))
 def test(streamer_name):
+    start_time = 0
+    end_time   = 0
 
     if not 'streamer_name' in session:
         flash('Ups... Coś poszło nie tak jak miało pójść. Spróbuj od początku.')
         return redirect(url_for("alfabet.index"))
 
     mode = 'alfabet/mode.html'
+    
     from string import ascii_uppercase
     alphabet = ascii_uppercase
+
     session['alphabet'] = alphabet
     session['alpha']    = alphabet[:13]
     session['bet']      = alphabet[13:]
@@ -78,61 +80,68 @@ def test(streamer_name):
     
 
     if request.method == 'POST':
-        error = None
+        mode = 'alfabet/game.html'
 
-
-        if error is None:
-            mode = 'alfabet/game.html'
-
-            if 'messages' in request.form:
-                session['mode'] = 'messages'
-            elif 'watchtime' in request.form:
-                session['mode'] = 'watchtime'
-            elif 'points' in request.form:
-                session['mode'] = 'points'
-            elif 'mixed' in request.form:
-                session['mode'] = 'mixed'
-            else:
-                answers = []
-                for letter in alphabet:
-                    usr = request.form[f'{letter}-usr']
-                    answers.append(usr)
-                    if usr:
-                        session[f'{letter}-usr'] = usr
-                    else:
-                        session[f'{letter}-usr'] = '🤡'
-
-                db = get_db()
-                max_points = 26
-                results, top1, max_points = game(db, streamer_name, answers, session['mode'])
-                
-                session['result'] = 0
-                session['max_points'] = max_points
-                
-                for letter in alphabet:
-                    session[f'{letter}-info'] = results[letter.lower()]
-                    session[f'{letter}-topu'] = top1[letter.lower()][0]
-                    topv = top1[letter.lower()][1]
-
-                    if session['mode'] == 'watchtime': 
-                        hours = topv / 60.0
-                        days  = hours / 24.0
-                        if days >= 1.0:
-                            topv = f'{round(days)} dni i {round(hours % 24)} godzin.'
-                        else:
-                            topv = f'{round(hours)} godzin'
-
-                    session[f'{letter}-topv'] = f'{topv}'
-
-                    if results[letter.lower()] == 'exact':
-                        session['result'] += 1.0
-                    elif results[letter.lower()] == 'close':
-                        session['result'] += 0.5
-
-
-                return redirect(url_for("alfabet.result", streamer_name=streamer_name))
+        if 'messages' in request.form:
+            session['mode']         = 'messages'
+            session['start_time']   = time()
+        elif 'watchtime' in request.form:
+            session['mode']         = 'watchtime'
+            session['start_time']   = time()
+        elif 'points' in request.form:
+            session['mode']         = 'points'
+            session['start_time']   = time()
+        elif 'mixed' in request.form:
+            session['mode']         = 'messages'#'mixed'
+            session['start_time']   = time()
         else:
-            flash(error)
+            test_time = round(time() - session['start_time'])
+            points = 0
+
+            answers = []
+            for letter in alphabet:
+                usr = request.form[f'{letter}-usr']
+                answers.append(usr)
+                if usr:
+                    session[f'{letter}-usr'] = usr
+                else:
+                    session[f'{letter}-usr'] = '🤡'
+
+            db = get_db()
+            max_points = 26
+            results, top1, max_points = game(db, streamer_name, answers, session['mode'])
+            
+            session['result'] = 0
+            session['max_points'] = max_points
+            
+            for letter in alphabet:
+                session[f'{letter}-info'] = results[letter.lower()]
+                session[f'{letter}-topu'] = top1[letter.lower()][0]
+                topv = top1[letter.lower()][1]
+
+                if session['mode'] == 'watchtime': 
+                    hours = topv / 60.0
+                    days  = hours / 24.0
+                    if days >= 1.0:
+                        topv = f'{round(days)} dni i {round(hours % 24)} godzin.'
+                    else:
+                        topv = f'{round(hours)} godzin'
+
+                session[f'{letter}-topv'] = f'{topv}'
+
+                if results[letter.lower()] == 'exact':
+                    points += 1.0
+                elif results[letter.lower()] == 'close':
+                    points += 0.5
+            
+            if test_time <= 30:
+                test_time = 0
+            if test_time >= 1200:
+                test_time = 1256
+            score = (144 * points) + (1256 - test_time)
+            session['result'] = score
+
+            return redirect(url_for("alfabet.result", streamer_name=streamer_name))
 
     return render_template(mode)
 
@@ -142,7 +151,7 @@ def result(streamer_name):
     if not 'streamer_name' in session:
         flash('Ups... Coś poszło nie tak jak miało pójść. Spróbuj od początku.')
         return redirect(url_for("alfabet.index"))
-    # SKOŃCZYĆ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
     session['exact']     = 'Faktycznie to '
     session['close']     = 'Niestety nie jest to najlepsza odpowiedź, ale było blisko. \
                             Mam nadzieję, że ' 
@@ -158,13 +167,8 @@ def result(streamer_name):
                             że nie ma ani jednego w top 100.'
 
     if request.method == 'POST':
-        error = None
-
-        if error is None:
-            session.clear()
-            return redirect(url_for("alfabet.index"))
-
-        flash(error)
+        session.clear()
+        return redirect(url_for("alfabet.index"))
 
     return render_template('alfabet/result.html')
 

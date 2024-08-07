@@ -1,5 +1,3 @@
-
-
 from difflib import SequenceMatcher
 
 def prepareAlphaList():
