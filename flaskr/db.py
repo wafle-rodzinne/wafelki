@@ -21,18 +21,33 @@ def close_db(e=None):
     if db is not None:
         db.close()
 
-def init_db():
+def init_db_channel():
     db = get_db()
-
-    with current_app.open_resource('schema.sql') as f:
+    with current_app.open_resource('db/channel.sql') as f:
         db.executescript(f.read().decode('utf8'))
+
+def init_db_ranking():
+    db = get_db()
+    with current_app.open_resource('db/ranking.sql') as f:
+        db.executescript(f.read().decode('utf8'))
+
+def init_db():
+    init_db_channel()
+    init_db_ranking()
 
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+    app.cli.add_command(init_db_channel_command)
 
 
 @click.command('init-db')
 def init_db_command():
     init_db()
     click.echo('Initialized the database.')
+    
+# Do resetowania częsci z kanałami bez naruszania rankingu
+@click.command('init-db-channel') 
+def init_db_channel_command():
+    init_db_channel()
+    click.echo('Initialized the channel part database.')
