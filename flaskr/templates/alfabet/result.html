@@ -6,22 +6,29 @@
 
 {% block content %}
     <div id="result-container" class="container">
-      <image id="result-image" src="{{ session['streamer_avatar'] }}">
       <div id="result-info" class="container">
+        <image id="result-image" src="{{ session['streamer_avatar'] }}">
         <div id="label-username">{{ session.streamer_name }}</div>
-        <h2>Wynik: <a>{{session['result']}}/{{session['max_points']}}</a></h2> 
       </div>
-      <div id="result-message">
-        {% if session['result'] < (5/10 * session['max_points']) %}
-          Słabiutka wiadomość tutaj
-        {% elif session['result'] < (9/10 * session['max_points']) %}
-          Nie jest źle, ale spodziewałem się więcej po tobie. 
-          Postaraj się częściej zerkać na czat a na pewno widzowie to docenią ($$$) 
-          i wyjdzie ci to na dobre.
-        {% else %}
-          Gratuluję świetnego wyniku. Widać że nie jest ci to obojętne co dzieje się na czacie 
-          i znasz swoich widzów na wylot. Trzymaj tak dalej a zajdziesz daleko.
-        {% endif %}
+        <!-- <h1><a>{{session['result']}}/{{session['max_points']|float}}</a></h1> -->
+      <div id="result-message-score" class="container">
+        <div id="result-message">
+            {% if session['result'] < 2500 %}
+              Słabiutka wiadomość tutaj
+            {% elif session['result'] < 4500 %}
+              Nie jest źle, ale spodziewałem się więcej po tobie. 
+              Postaraj się częściej zerkać na czat a na pewno widzowie to docenią ($$$) 
+              i wyjdzie ci to na dobre.
+            {% else %}
+              Gratuluję świetnego wyniku. Widać że nie jest ci to obojętne co dzieje się na czacie 
+              i znasz swoich widzów na wylot. Trzymaj tak dalej a zajdziesz daleko.
+            {% endif %}
+        </div>
+        <div id="result-score">
+          {% set progress = ((session['result'] / 5000) * 100)|round(2) %}
+          <div id="score-bar" width="{{progress}}%"></div>
+          <div id="score-val">{{session['result']|int}} / 5000</div>
+        </div>
       </div>
     </div>
     <div class="container" id="table-container">
@@ -46,33 +53,33 @@
             {% set msg_1 = 'oglądając wytrwale przez ' %}
             {% set msg_2 = '' %}
           {% elif session['mode'] == 'points' %}
-            {% set msg_1 = 'zbierając zatrważające ' %}
+            {% set msg_1 = 'zbierając kolosalne ' %}
             {% set msg_2 = ' ' + session['points_name'] %}
           {% endif %}
           
           {% if session[info] == 'exact' %}
-            {% set point = '1' %}
+            {% set point = 'greenlight.png' %}
             {% set msg_0 = ' i jak najbardziej zasługuje na pierwsze miejsce, ' %}
           {% elif session[info] == 'close' %}
-            {% set point = '0.5' %}
+            {% set point = 'yellowlight.png' %}
             {% set msg_0 = ' nie ma ci tego za złe, ' %}
           {% elif session[info] == 'far' %}
-            {% set point = '0' %}
+            {% set point = 'redlight.png' %}
             {% set msg_0 = ' to osoba która angażowała się o wiele więcej, ' %}
           {% elif session[info] == 'noanswer' %}
-            {% set point = '0' %}
+            {% set point = 'redlight.png' %}
             {% set msg_0 = ' tego nie widzi, ' %}
           {% elif session[info] == 'nouser' %}
-            {% set point = '0' %}
+            {% set point = 'redlight.png' %}
             {% set msg_0 = '' %}
           {% else %}{# unknown #}
-            {% set point = '0' %}
+            {% set point = 'redlight.png' %}
             {% set msg_0 = ' która wspiera cię, ' %}
           {% endif %}
 
           
           <tr class="container" id="table-row">
-            <th id="table-result-point" class="container">{{ point }}</th>
+            <th id="table-result-point" class="container"><img src="{{url_for('static', filename='img/' + point)}}"></th>
             <th id="table-result-letter" class="container">{{ letter }}</th>
             <th id="table-result-user" class="container">{{ session[usr] }}</th>
             <th id="table-result-message">
@@ -90,4 +97,10 @@
         <input id="table-result-submit" type="submit" value="Powrót na Start">
       </form>
     </div>
+
+    <script>
+      var score_bar = document.getElementById("score-bar");
+      score_bar.style.width = '{{progress}}%';
+    </script>
+
 {% endblock %}

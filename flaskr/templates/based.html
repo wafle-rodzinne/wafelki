@@ -6,7 +6,7 @@
 <div class="container" id="container">
   <nav class="container" id="nav-bar">
     <h1>
-      <a href="{{ url_for('alfabet.index') }}"> 
+      <a href="/"> 
         <div class="container" id="nav-bar">
           <image src="{{ url_for('static', filename='img/wafelki.png') }}" id="nav-bar-image">
           Wafelki
@@ -15,12 +15,26 @@
     </h1>
     <div class="container" id="nav-menu">
       <a id="nav-menu-fill"></a>
-      <a href="{{ url_for('alfabet.index') }}" id="nav-menu-item"> ABC Szczura </a>
+      <div class="container" id="mode-container">
+        <a class="container" href="{{ url_for('alfabet.index') }}">
+          <img id="abc" src="{{ url_for('static', filename='img/empty.png') }}">
+        </a>
+        <a class="container" href="{{ url_for('emotomat.index') }}">
+          <img id="emotomat" src="{{ url_for('static', filename='img/empty.png') }}">
+        </a>
+        <a class="container" href="/">
+          <img id="gra-emotka-nazwa-do-zmiany" src="{{ url_for('static', filename='img/empty.png') }}">
+        </a>
+        <a class="container" href="/">
+          <img id="kula" src="{{ url_for('static', filename='img/empty.png') }}">
+        </a>
+      </div>
     </div>
   </nav>
 
   <div class="container" id="body-container">
     <div id="body-left-panel">
+      <div id="rec-title">Błędy</div>
         {% for message in get_flashed_messages() %}
           <div class="flash">{{ message }}</div>
         {% endfor %}
@@ -41,7 +55,8 @@
         {% block content %}{% endblock %}
         
         <footer class="container">
-          <a href="{{ url_for('alfabet.info') }}"><div id="ft-text">Info</div></a>
+          stopa
+          <!-- <a href="{{ url_for('alfabet.info') }}"><div id="ft-text">Info</div></a> -->
         </footer>
       </section>
 
@@ -52,7 +67,8 @@
                              'Teskacz', 'Niesamowita Oferta!!!'] %}
       {% set rec_offers = ['https://www.biedronka.pl/pl/biedronkowe-oszczednosci',
                            'https://www.lidl.pl/q/query/wyprzedaz',
-                           'https://www.zabka.pl/gazetka-promocyjna/'] %}
+                           'https://www.zabka.pl/gazetka-promocyjna/',
+                           'https://stokrotka.pl/oferta/gazetki-promocyjne/'] %}
       <div id="rec-title">Polecane Kanały</div>
 
       <div id="rec-content">
@@ -96,11 +112,9 @@
   var bar_status = 0;
   if(parseInt(sessionStorage.getItem('bar status'))){
     bar_status = parseInt(sessionStorage.getItem('bar status'));
-    console.log('session', sessionStorage.getItem('bar status'));
   }
   else{
     bar_status = (bar_status === 0) ? bar_status : 0;
-    console.log('session', bar_status);
   }
   
 
@@ -121,7 +135,6 @@
       img_right.style.transform = 'scaleX(1)';
   }
   function updateBarStatus(){
-    console.log(bar_status);
     sessionStorage.setItem('bar status', bar_status);
   }
 

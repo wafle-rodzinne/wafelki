@@ -1,0 +1,66 @@
+{% extends 'based.html' %}
+
+{% block header %}
+  <h1 id="header-title">{% block title %}Gierki{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <div id="loading-gif" class="container">
+    <image src="{{ url_for('static', filename='img/loading.gif') }}" id="joel">
+    <label>Ładowanie statystyk. Zwykle trwa do 30 sekund.</label>
+  </div>
+  <form class="container" method="post">
+
+    <label id="label-modes">Wybierz sobie</label>
+
+    <div class="container" id="mode-description-container">
+      <div class="container" id="mode-container">
+        <a class="container" href="/alfabet">
+          <img id="abc" src="{{ url_for('static', filename='img/empty.png') }}">
+        </a>
+        <a class="container" href="/emotomat">
+          <img id="emotomat" src="{{ url_for('static', filename='img/empty.png') }}">
+        </a>
+        <a class="container" href="/">
+          <img id="gra-emotka-nazwa-do-zmiany" src="{{ url_for('static', filename='img/empty.png') }}">
+        </a>
+        <a class="container" href="/">
+          <img id="kula" src="{{ url_for('static', filename='img/empty.png') }}">
+        </a>
+      </div>
+      <label class="container" id="abc-description">
+        <h1>ABC Szczura</h1>
+        <h3>
+          Ta gierka sprawdza twoją znajomość czatu.<br>
+          Znajdują się w niej 3 kategorie:<br>
+          <span>Wiadomości</span>, <span>Czas oglądania</span> oraz <span>Punkty</span>.<br>
+           W każdej z kategorii musisz zgadnąć najbardziej zaangażowaną osobę na każdą literę.<br>
+           Na koniec dostajesz tabelkę i zdobyte punkty.
+        </h3>
+      </label>
+      <label class="container" id="emotomat-description">
+        <h1>Emotomat</h1>
+        Info co do emotomatu
+      </label>
+      <label class="container" id="kula-description">
+        <h1>Magiczna kula</h1>
+        Trwają roboty, nie widać?
+        <img src="{{ url_for('static', filename='img/robota.gif') }}">
+      </label>
+      <label class="container" id="gra-emotka-nazwa-do-zmiany-description">
+        <h1>Nazwa Do Zmiany!</h1>
+        Trwają roboty, nie widać?
+        <img src="{{ url_for('static', filename='img/robota.gif') }}">
+      </label>
+    </div>
+
+    <div></div>
+
+    <div id="form-fill"></div>
+
+  </form>
+  
+<script>
+  sessionStorage.clear()
+</script>
+{% endblock %}

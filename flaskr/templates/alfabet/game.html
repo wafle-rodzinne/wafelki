@@ -5,9 +5,48 @@
 {% endblock %}
 
 {% block content %}
+
+  <script>
+    var start_time = new Date().getTime();
+
+    var x = setInterval(function() {
+
+      var now = new Date().getTime();
+
+      var past_time = now - start_time;
+
+      var minutes = Math.floor((past_time % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((past_time % (1000 * 60)) / 1000);
+
+      let m = document.getElementById("m");
+      let s = document.getElementById("s");
+
+      if(seconds < 10){
+        seconds = '0' + seconds
+      }
+      if(minutes < 10){
+        minutes = '0' + minutes
+      }
+      if(minutes >= 60){
+        m.innerHTML = '60'
+        s.innerHTML = '00'
+        clearInterval(x)
+      }
+      m.innerHTML = minutes;
+      s.innerHTML = seconds;
+
+    }, 1000);
+  </script>
+
   <form method="post" class="container">
     <div class="container" id="form-avatar">
-      <image src="{{ session['streamer_avatar'] }}" height="64px" width="64px">
+      <div class="container" id="avatar-timer">
+        <div id="avatar-fill"></div>
+        <image src="{{ session['streamer_avatar'] }}" height="64px" width="64px">
+        <p id="timer">
+          <span id="m">00</span>:<span id="s">00</span>
+        </p>
+      </div>
       <div id="label-username">{{ session.streamer_name }}</div>
     </div>
     <div class="container" id="table-container">
