@@ -20,13 +20,15 @@ def create_app(test_config=None):
 
     @app.route('/')
     def siema():
-        return redirect(url_for('alfabet.index'))
-        #return render_template('index.html')
+        #return redirect(url_for('alfabet.index'))
+        return render_template('index.html')
 
 
     from . import alfabet
     app.register_blueprint(alfabet.bp)
 
+    from . import emotomat
+    app.register_blueprint(emotomat.bp)
     
     from . import db
     db.init_app(app)
