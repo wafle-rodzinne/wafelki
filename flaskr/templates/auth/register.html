@@ -1,0 +1,24 @@
+{% extends 'based.html' %}
+
+{% block header %}
+  <h1 id="header-title">{% block title %}Rejestracja{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form class="container" id="form-register" method="post">
+    <div class="container" id="form-register-input">
+        <label for="username" id="label-username">Nazwa</label>
+        <input name="username" class="text-input" id="username" maxlength="32">
+        <label for="password" id="label-password">Hasło</label>
+        <input type="password" name="password" class="text-input" id="password" maxlength="128">
+    </div>
+    <input id="submit-register" type="submit" value="Zarejestruj">
+
+    <label id="label-info">Rejestracja</label>
+
+
+    <div id="form-fill"></div>
+
+  </form>
+  
+{% endblock %}
