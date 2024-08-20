@@ -8,7 +8,7 @@
     <h1>
       <a href="/"> 
         <div class="container" id="nav-bar">
-          <image src="{{ url_for('static', filename='img/wafelki.png') }}" id="nav-bar-image">
+          <img src="{{ url_for('static', filename='img/wafelki.png') }}" id="nav-bar-image">
           Wafelki
         </div> 
       </a>
@@ -28,15 +28,27 @@
         <a class="container" href="/">
           <img id="kula" src="{{ url_for('static', filename='img/empty.png') }}">
         </a>
+        {% if session['user_id'] %}
+        <a class="container" href="/auth/login">
+          <img id="logged" src="{{ url_for('static', filename='img/empty.png') }}">
+          <img id="logged-background" src="{{ url_for('static', filename='img/empty.png') }}">
+        </a>
+        {% else %}
+        <a class="container" href="/auth/login">
+          <!-- <img id="not-logged" src="{{ url_for('static', filename='img/empty.png') }}">
+          <img id="not-logged-background" src="{{ url_for('static', filename='img/empty.png') }}"> -->
+          <div id="navbar-username"><span>Zaloguj</span></div>
+        </a>
+        {% endif %}
       </div>
     </div>
   </nav>
 
   <div class="container" id="body-container">
     <div id="body-left-panel">
-      <div id="rec-title">Błędy</div>
-        {% for message in get_flashed_messages() %}
-          <div class="flash">{{ message }}</div>
+      <div id="rec-title">Info</div>
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+          <div class="flash" id="{{ category }}">{{ message }}</div>
         {% endfor %}
     </div>
 
@@ -45,18 +57,17 @@
       <section class="container">
         <header class="container" id="header">
           <button id="hide-left-panel">
-            <image id="hide-left-panel-img" src="{{ url_for('static', filename='img/hide-left-panel.png') }}">
+            <img id="hide-left-panel-img" src="{{ url_for('static', filename='img/hide-left-panel.png') }}">
           </button>
           {% block header %}{% endblock %}
           <button id="hide-right-panel">
-            <image id="hide-right-panel-img" src="{{ url_for('static', filename='img/hide-right-panel.png') }}">
+            <img id="hide-right-panel-img" src="{{ url_for('static', filename='img/hide-right-panel.png') }}">
           </button>
         </header>
         {% block content %}{% endblock %}
         
         <footer class="container">
           stopa
-          <!-- <a href="{{ url_for('alfabet.info') }}"><div id="ft-text">Info</div></a> -->
         </footer>
       </section>
 
@@ -105,10 +116,20 @@
   </div>
 </div>
 <script>
-  const left_panel = document.getElementById('body-left-panel');
-  const img_left = document.getElementById('hide-left-panel-img');
+  const left_panel  = document.getElementById('body-left-panel');
+  const img_left    = document.getElementById('hide-left-panel-img');
   const right_panel = document.getElementById('body-right-panel');
-  const img_right = document.getElementById('hide-right-panel-img');
+  const img_right   = document.getElementById('hide-right-panel-img');
+  const logged_img  = document.getElementById('logged');
+
+  if("{{session.get('avatar_id')}}" == "None"){
+    //logged_img.style.backgroundImage = "url({{url_for('static', filename='img/avatar/default.png')}})";
+  }
+  else{
+    {% set avatar_name = 'img/avatar/avatar_' + session.get('avatar_id')|string + '.png' %}
+    logged_img.style.backgroundImage = "url({{url_for('static', filename=avatar_name)}})";
+  }
+
   var bar_status = 0;
   if(parseInt(sessionStorage.getItem('bar status'))){
     bar_status = parseInt(sessionStorage.getItem('bar status'));

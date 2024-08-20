@@ -1,3 +1,13 @@
+@font-face {
+    font-family: 'Armitage';
+    src: local('Armitage Bold'), local('Armitage-Bold'),
+        url('fonts/Armitage/Armitage-Bold.woff2') format('woff2'),
+        url('fonts/Armitage/Armitage-Bold.woff') format('woff'),
+        url('fonts/Armitage/Armitage-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
 :root{
     --img-border: rgb(236, 56, 176);
     --col-1: #40334f;
@@ -30,6 +40,17 @@ body {
     background-color: var(--backgroud);
     height: 100%;
     overflow: hidden;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
 }
 
 #container {
@@ -236,6 +257,11 @@ label {
     font: 1.5em sans-serif;
     font-weight: bold;
 }
+#label-password {
+    color: rgb(240, 213, 250);
+    font: 1.5em sans-serif;
+    font-weight: bold;
+}
 
 #label-info {
     padding-left: 10%;
@@ -305,7 +331,64 @@ form {
     }
 }
 
-#username {
+#form-login {
+    > #form-login-input {
+        flex-direction: column;
+        /*> #username {
+
+        }
+        > #password {
+
+        }*/
+    }
+    > #submit-login {
+        margin-left: 4%;
+        width: 26%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0);
+        border: 1px solid var(--submit-start);
+        font: 1em sans-serif;
+        color: white;
+    }
+    #submit-login:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white;
+    }
+    #submit-login:active {
+        color: gray;
+    }
+}
+
+#form-register {
+    > #form-register-input {
+        flex-direction: column;
+        /*> #username {
+
+        }
+        > #password {
+
+        }*/
+    }
+    > #submit-register {
+        margin-left: 4%;
+        width: 26%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0);
+        border: 1px solid var(--submit-start);
+        font: 1em sans-serif;
+        color: white;
+    }
+    #submit-register:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white;
+    }
+    #submit-register:active {
+        color: gray;
+    }
+}
+
+
+.text-input {
     outline: none;
     background-color: var(--col-7);
     color: white;
@@ -422,6 +505,12 @@ form {
     color: white;
     background-color: rgba(255, 0, 0, 0.61);
     font: 1.2em sans-serif;
+}
+.flash#good {
+    background-color: rgba(94, 255, 0, 0.61);
+}
+.flash#info {
+    background-color: rgba(109, 109, 109, 0.61);
 }
 
 #rec-title {
@@ -653,7 +742,7 @@ form {
     }
 }
 
-#table-result {
+#table-result{
     --user-exact:  green;
     --user-close:  orange;
     --user-far:    red;
@@ -793,6 +882,136 @@ form {
     }
 }
 
+#table-profile-stats {
+    width: 100%;
+    padding-left: 2vw;
+    padding-right: 2vw;
+    > tbody {
+        > tr {
+            width: 100%;
+            flex-direction: row;
+            justify-content: flex-start;
+            border-left: 0.2vw solid var(--col-11);
+            border-right: 0.2vw solid var(--col-11);
+            > th {
+                height: 4.2vh;
+                padding: 0.1vh;
+                /*color: white;*/
+                font-size: 2.6vh;
+            }
+            > #row-name {
+                flex-grow: 1;
+                width: 50%;
+            }
+            > #row-value {
+                width: 50%;
+            }
+        }
+        > tr:nth-child(odd) {
+            background-color: var(--col-7);
+        }
+        > tr:nth-child(even) {
+            background-color: var(--col-6);
+        }
+        > #table-row-emotomat-label {
+            border-top: 0.2vw solid var(--col-11);
+            border-bottom: 0.2vw solid var(--col-11);
+        }
+        > #table-row-emotomat-points {
+            > #row-value {
+                font-family: Armitage;
+                color: rgb(255, 195, 24);
+                text-shadow: 1px  1px 0 black,
+                            -1px  1px 0 black,
+                            -1px -1px 0 black,
+                             1px -1px 0 black;
+            }
+        }
+        > #table-row-emotomat-lost {
+            border-bottom: 0.2vw solid var(--col-11);
+        }
+        > #table-row-abc-label {
+            margin-top: 5vh;
+            border-top: 0.2vw solid var(--col-11);
+            border-bottom: 0.2vw solid var(--col-11);
+        }
+        > #table-row-abc-time {
+            border-bottom: 0.2vw solid var(--col-11);
+        }
+        > #table-row-svn-label {
+            margin-top: 5vh;
+            border-top: 0.2vw solid var(--col-11);
+            border-bottom: 0.2vw solid var(--col-11);
+            background-color: var(--col-7);
+        }
+        > #table-row-svn-profile {
+            height: 4.2vh;
+            border-bottom: 0.2vw solid var(--col-11);
+            background-color: var(--col-6);
+            > #row-button {
+                width: 4.2vh;
+                height: 100%;
+                padding: 0;
+                > button {
+                    height: 100%;
+                    border: 0;
+                    padding: 0;
+                    background-color: #00000000;
+                    font: 3vh sans-serif;
+                    color: #c2c2c2;
+                }
+                >button:hover {
+                    /*background-color: #ffffff34;*/
+                    color: #f8f8f8;
+                }
+            }
+            > #row-name {
+                flex-grow: 1;
+                /*width: calc((100% - 4.2vh) * 3.8 / 10);*/
+                width: calc(50% - 8.4vh);
+                padding-right: 4.2vh;
+            }
+            > #row-value {
+                /*width: calc((100% - 4.2vh) * 5.2 / 10);*/
+                width: 50%;
+            }
+        }
+        > #table-row-svn-add {
+            height: 4.2vh;
+            display: none;
+            border-bottom: 0.2vw solid var(--col-11);
+            background-color: var(--col-6);
+            > #row-name {
+                width: 75%;
+                height: auto;
+                > input {
+                    padding: 0;
+                    border: 0;
+                    height: 100%;
+                    width: 100%;
+                }
+            }
+            > #row-value {
+                width: 25%;
+                height: 100%;
+                padding: 0;
+                > button {
+                    height: 100%;
+                    border: 0;
+                    padding: 0;
+                    background-color: #00000000;
+                    font: 3.8vh sans-serif;
+                    color: #c2c2c2;
+                }
+                >button:hover {
+                    background-color: #ffffff34;
+                    color: #f8f8f8;
+                }
+            }
+        }
+    }
+}
+
 #loading-gif {
     height: 100%;
     border-bottom: 2px solid var(--col-11);
@@ -850,7 +1069,9 @@ footer {
         border: 0;
         border-radius: 0;
         outline: none;
-        > img {
+        /*flex-direction: row;*/
+        position: relative;
+        > img, div{
             width: 128px;
             height: 128px;
             background-size: 128px 128px;
@@ -861,7 +1082,7 @@ footer {
             border-radius: 0;
             outline:none;
         }
-        > img:hover {
+        > img:hover, #navbar-username:hover{
             background-color: #a7a7a757;
         }
         > #abc {
@@ -889,6 +1110,38 @@ footer {
         }
         > #kula:hover {
             background-image: url('img/kula-pelna.png');
+        }
+        > #logged-background {
+            z-index: 0;
+            background-image: url('img/avatar/background_blue_x256.png');
+            position: absolute;
+            top: 0;
+            /*right: 2px;*/
+            left: 0;
+        }
+        > #logged-background:hover {
+            background-color: transparent;
+        }
+        > #logged {
+            z-index: 1;
+            background-image: url('img/avatar/default.png');
+        }
+        > #navbar-username {
+            display: flex;
+            height: 64px;
+            width: auto;
+            padding-left: 1vw;
+            padding-right: 1vw;
+            font: 3.4vh sans-serif;
+            font-weight: bold;
+            /*color: #ffcc23de;*/
+            color: var(--col-10);
+            align-items: center;
+            > span {
+                text-align: center;
+                padding: auto;
+                margin: auto;
+            }
         }
     }
 }
@@ -948,7 +1201,7 @@ footer {
     }
 }
 
-#slots-container {
+#emotomat-container {
     flex-direction: row;
     > #slots-panel-left {
         width: 100%;
@@ -958,84 +1211,192 @@ footer {
         width: 100%;
         max-width: calc((100% - 512px) / 2);
     }
-    > #slots {
-        width: 512px;
-        height: 60vh;
-        min-height: 512px;
+    > #slots-container {
+        > #slots {
+            width: 512px;
+            height: auto;
+            min-height: 512px;
+            position: relative;
+            top: 0;
+            > #mega-jackpot-container {
+                height: 512px;
+            }
+            > img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                border: 0;
+                border-radius: 0;
+                background-size: 512px 512px;
+                height: 512px;
+                width: 512px;
+            }
+            > #slots-machine {
+                z-index: 1;
+            }
+            > #slots-lever {
+                background-image: url('img/4x/4x-slots-lever-up.png');
+                z-index: 2;
+            }
+            > button {
+                z-index: 3;
+                position: absolute;
+                border: 1px transparent;
+                background-color: transparent;
+            }
+            > #slots-lever-button {
+                top: 48px;
+                left: 420px;
+                height: 56px;
+                width: 64px;
+                border-radius: 56px;
+            }
+            > #slots-bet-plus {
+                top: 385px;
+                left: 348px;
+                height: 68px;
+                width: 76px;
+                border-radius: 20px;
+            }
+            > #slots-bet-minus {
+                top: 385px;
+                left: 260px;
+                height: 68px;
+                width: 76px;
+                border-radius: 20px;
+            }
+            > #slots-bet-minus:hover{
+                background-color: #ffffff3a;
+            }
+            > #slots-bet-plus:hover{
+                background-color: #ffffff3a;
+            }
+            > #slots-bet-input {
+                outline: none;
+                z-index: 3;
+                position: absolute;
+                border: 0;
+                top: 402px;
+                left: 62px;
+                height: 32px;
+                width: 164px;
+                text-align: right;
+                color: white;
+                font: 4vh sans-serif;
+                background-color: transparent;
+            }
+
+            > #slots-background {
+                z-index: 0;
+                position: absolute;
+                flex-direction: row;
+                justify-content: space-between;
+                top: 144px;
+                left: 56px;
+                background-size: 512px 512px;
+                height: 208px;
+                width: 356px;
+                > .slot {
+                    position: relative;
+                    height: 208px;
+                    width: 104px;
+                    margin-left: 10px;
+                    margin-right: 10px;
+                    background-color: rgb(110, 72, 146);
+                    overflow: hidden;
+                    > .slot-emote {
+                        width: 104px;
+                        height: 104px;
+                    }
+                }
+                > #slot-1{
+                    margin-left: 0;
+                }
+                > #slot-3{
+                    margin-right: 0;
+                    width: 108px;
+                    > div {
+                        margin-left: 2px;
+                        margin-right: 2px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+#form-emotomat {
+    > #form-input{
+        > .text-input {
+            height: 3.2vh;
+            width: 33vh;
+            font: 2vh sans-serif;
+        }
+        > #submit-start {
+            width: 10vh;
+        }
+    }
+    > #label-info {
+        text-align: justify;
+        margin: 3vh;
+        color: rgba(255, 255, 255, 0.692);
+        font: 2.5vh sans-serif;
+        > a {
+            font: 2.5vh sans-serif;
+        }
+    }
+    > img {
+        border: 0;
+        border-radius: 0;
+        height: 3vw;
+        width: 35vw;
+        border: 0.2vh solid var(--col-11);
+    }
+}
+
+#hidden-emotes-container {
+    display: none;
+    > #hidden-emote-url{
+        display: none;
+    }
+}
+
+#form-profile {
+    > #profile-avatar {
+        width: 128px;
+        height: 128px;
         position: relative;
-        top: 0;
+        align-self: center;
         > img {
             position: absolute;
-            top: 0;
-            left: 0;
+            width: 128px;
+            height: 128px;
+            background-size: 128px 128px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #00000000;
             border: 0;
             border-radius: 0;
-            background-size: 512px 512px;
-            height: 512px;
-            width: 512px;
+            outline:none;
+            left: 0;
+            top: 0;
         }
-        > #slots-machine {
-            z-index: 1;
-        }
-        > #slots-lever {
-            background-image: url('img/4x/4x-slots-lever-up.png');
-            z-index: 2;
-        }
-        > #slots-lever-button {
-            z-index: 3;
-            position: absolute;
-            top: 48px;
-            left: 420px;
-            height: 56px;
-            width: 64px;
-            border: 1px transparent;
-            border-radius: 56px;
-            background-color: transparent;
-        }
-        > #slots-background {
-            z-index: 0;
-            position: absolute;
-            flex-direction: row;
-            justify-content: space-between;
-            top: 144px;
-            left: 56px;
-            background-size: 512px 512px;
-            height: 208px;
-            width: 356px;
-            > .slot {
-                position: relative;
-                height: 208px;
-                width: 104px;
-                margin-left: 10px;
-                margin-right: 10px;
-                background-color: rgb(110, 72, 146);
-                overflow: hidden;
-                > .slot-emote {
-                    width: 104px;
-                    height: 104px;
-                }
-            }
-            > #slot-1{
-                margin-left: 0;
-            }
-            > #slot-3{
-                margin-right: 0;
-                width: 108px;
-                > div {
-                    margin-left: 2px;
-                    margin-right: 2px;
-                }
-            }
+        > #profile-avatar-background {
+            background-image: url('img/avatar/background_blue_x256.png');
         }
     }
-    /*> #slots:has(#slots-lever-button:hover) {
-        > #slots-lever {
-            background-image: url('img/4x/4x-slots-lever-up-hover.png');
-        }
-    }
-    > #slots:has(#slots-lever-button:active) {
-        > #slots-lever {
-            background-image: url('img/4x/4x-slots-lever-down.png');
-        }
-    }*/
+}
+
+.studs {
+    font-family: Armitage;
+    color: rgb(255, 195, 24);
+    text-shadow: 1px  1px 0 black,
+                -1px  1px 0 black,
+                -1px -1px 0 black,
+                 1px -1px 0 black;
+}
+
+.default-text {
+    color: white;
+    font-family: sans-serif;
 }
