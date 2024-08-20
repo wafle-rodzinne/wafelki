@@ -1,6 +1,8 @@
 import os
 
-from flask import (Flask, redirect, url_for, render_template)
+from flask import (Flask, redirect, url_for, render_template, current_app)
+
+from .streamer import Streamer, SvnEmote
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -18,17 +20,24 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+
     @app.route('/')
     def siema():
-        #return redirect(url_for('alfabet.index'))
         return render_template('index.html')
 
+    
 
     from . import alfabet
     app.register_blueprint(alfabet.bp)
 
     from . import emotomat
     app.register_blueprint(emotomat.bp)
+    
+    from . import auth
+    app.register_blueprint(auth.bp)
+
+    from . import profile
+    app.register_blueprint(profile.bp)
     
     from . import db
     db.init_app(app)
