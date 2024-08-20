@@ -1,0 +1,191 @@
+{% extends 'based.html' %}
+
+{% block header %}
+  <h1 id="header-title">{% block title %}Profil{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form class="container" id="form-profile" method="post">
+    <div id="profile-avatar">
+      <img id="profile-avatar-background" src="{{ url_for('static', filename='/img/empty.png') }}">
+      <img id="profile-avatar-img"        src="{{ url_for('static', filename='/img/empty.png') }}">
+    </div>
+    <label id="label-username">{{ session['username'] }}</label>
+    <table id="table-profile-stats">
+          <tr class="container" id="table-row-emotomat-label">
+          <th id="row-name" class="container default-text">Emotomat</th>
+        </tr>
+        <tr class="container" id="table-row-emotomat-points">
+          <th id="row-name" class="container default-text">Monetki</th>
+          <th id="row-value" class="container studs">0</th>
+        </tr>
+        <tr class="container" id="table-row-emotomat-won">
+          <th id="row-name" class="container default-text">Wygrane</th>
+          <th id="row-value" class="container studs">0</th>
+        </tr>
+        <tr class="container" id="table-row-emotomat-lost">
+          <th id="row-name" class="container default-text">Zainwestowane</th>
+          <th id="row-value" class="container studs">0</th>
+        </tr>
+
+        <tr class="container" id="table-row-abc-label">
+          <th id="row-name" class="container default-text">ABC Szczura</th>
+        </tr>
+        <tr class="container" id="table-row-abc-score">
+          <th id="row-name" class="container default-text">Najlepszy Wynik</th>
+          <th id="row-value" class="container default-text">0</th>
+        </tr>
+        <tr class="container" id="table-row-abc-time">
+          <th id="row-name" class="container default-text">Czas</th>
+          <th id="row-value" class="container default-text">0</th>
+        </tr>
+
+        <tr class="container" id="table-row-svn-label">
+          <th id="row-name" class="container default-text">Przypisany profil 7tv</th>
+        </tr>
+        <tr class="container" id="table-row-svn-profile">
+          <th id="row-button" class="container">
+            <button id="delete-svn-user" type="button">x</button>
+          </th>
+          <th id="row-name" class="container default-text">-</th>
+          <th id="row-value" class="container default-text">-</th>
+        </tr>
+        <tr class="container" id="table-row-svn-add">
+          <th id="row-name" class="container">
+            <input name="svn-user-id" class="text-input" id="svn-user-id" maxlength="24">
+          </th>
+          <th id="row-value" class="container">
+            <button id="add-svn-user" type="button">+</button>
+          </th>
+        </tr>
+    </table>
+    <label class="container" id="emotomat-description"></label>
+
+
+    <div id="form-fill"></div>
+
+  </form>
+
+  <script>
+  const avatar_background = document.getElementById('profile-avatar-background');
+  const avatar_img        = document.getElementById('profile-avatar-img');
+
+  if("{{session.get('avatar_id')}}" == "None"){
+    avatar_img.style.backgroundImage = "url({{url_for('static', filename='img/avatar/default.png')}})";
+  }
+  else{
+    {% set avatar_name = 'img/avatar/avatar_' + session.get('avatar_id')|string + '.png' %}
+    avatar_img.style.backgroundImage = "url({{url_for('static', filename=avatar_name)}})";
+  }
+  </script>
+
+  <script>
+    const points_element         = document.getElementById('table-row-emotomat-points').lastElementChild;
+    const won_points_element     = document.getElementById('table-row-emotomat-won').lastElementChild;
+    const lost_points_element    = document.getElementById('table-row-emotomat-lost').lastElementChild;
+
+    const abc_score_element      = document.getElementById('table-row-abc-score').lastElementChild;
+    const abc_time_element       = document.getElementById('table-row-abc-time').lastElementChild;
+    
+    const svn_profile_element    = document.getElementById('table-row-svn-profile');
+    const svn_profile_name       = svn_profile_element.childNodes[3];
+    const svn_profile_id         = svn_profile_element.childNodes[5];
+    const svn_profile_add        = document.getElementById('table-row-svn-add');
+    const add_svn_user_input     = document.getElementById('svn-user-id');
+    const add_svn_user_button    = document.getElementById('add-svn-user');
+    const delete_svn_user_button = document.getElementById('delete-svn-user');
+
+
+    var stats_updated       = false;
+    var points              = 0;
+    var lost_points         = 0;
+    var won_points          = 0;
+
+    var abc_best_score      = 0;
+    var abc_best_time       = 0;
+    var abc_best_min        = '00';
+    var abc_best_sec        = '00';
+
+    var is_streamer         = 0;
+    var streamer_svnid      = null;
+    var streamer_svn_name   = 'Nie można uzyskać nazwy'
+
+    stats_url = "{{ url_for('profile.stats', username=session.get('username')) }}";
+    fetch(stats_url).then(response => response.json())
+        .then(json => {
+                points            = json['points'];
+                abc_best_score    = json['abc_best_score'];
+                abc_best_time     = json['abc_best_time'];
+                lost_points       = json['lost_points'];
+                won_points        = json['won_points'];
+                is_streamer       = json['streamer_bool'];
+                streamer_svnid    = json['streamer_svnid'];
+                streamer_svn_name = json['streamer_svn_name'];
+                stats_updated     = true;
+
+                abc_best_min = Math.round(abc_best_time / 60); 
+                abc_best_sec = Math.round(abc_best_time % 60);
+
+                if(abc_best_min < 10)
+                    abc_best_min = '0' + abc_best_min.toString();
+                else
+                    abc_best_min = abc_best_min.toString();
+
+                if(abc_best_sec < 10)
+                    abc_best_sec = '0' + abc_best_sec.toString();
+                else
+                    abc_best_sec = abc_best_sec.toString();
+
+            });
+
+    var x = setInterval(function() {
+        if(stats_updated){
+            points_element.innerHTML        = points;
+            lost_points_element.innerHTML   = lost_points;
+            won_points_element.innerHTML    = won_points;
+            abc_score_element.innerHTML     = abc_best_score;
+            abc_time_element.innerHTML      = abc_best_min + ':' + abc_best_sec;
+
+            if(streamer_svnid == null){
+                svn_profile_element.style.display = 'none';
+                svn_profile_add.style.display     = 'flex';
+            }
+            else{
+                svn_profile_name.innerHTML      = streamer_svn_name;
+                svn_profile_id.innerHTML        = streamer_svnid;
+            }
+
+
+            clearInterval(x);
+        }
+    }, 100);
+
+    add_svn_user_button.addEventListener('click', () => {
+        if(add_svn_user_input.value != ''){
+            data = {
+                'svnid': add_svn_user_input.value,
+            }
+            add_svn_user_url = "{{ url_for('profile.svnbind', username=session.get('username')) }}";
+            fetch(add_svn_user_url, {
+                "method": "POST",
+                "headers": {"Content-Type": "application/json"},
+                "body": JSON.stringify(data),
+            }).then( response => {
+                location.reload();
+                }); 
+        }
+    });
+
+    delete_svn_user_button.addEventListener('click', () => {
+            add_svn_user_url = "{{ url_for('profile.svnbind', username=session.get('username')) }}";
+            fetch(add_svn_user_url, {
+                "method": "POST",
+                "headers": {"Content-Type": "application/json"},
+                "body": JSON.stringify({'svnid': null}),
+            }).then( response => {
+                location.reload();
+                }); 
+    });
+  </script>
+  
+{% endblock %}
