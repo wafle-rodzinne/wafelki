@@ -6,9 +6,52 @@
 
 {% block content %}
 
-    <form class="container" method="post">
+    
+  <div id="loading-gif" class="container">
+    <img src="{{ url_for('static', filename='img/loading.gif') }}" id="joel">
+    <label>Ładowanie statystyk.</label>
+  </div>
+  <form class="container" method="post" id="form-emotomat">
 
-    </form>
+    <label for="username" id="label-username">Podaj ID profilu na 7tv</label>
+
+    <div class="container" id="form-input">
+      {% if session.get('svnid') == none %}
+        {% set svnid = '' %}
+      {% else %}
+        {% set svnid = session.get('svnid') %}
+      {% endif %}
+      <input name="emotomat-id" class="text-input" id="emotomat-id" maxlength="24" value="{{svnid}}">
+      <input id="submit-start" type="submit" value="Start">
+    </div>
+
+    <label id="label-info">
+      Żeby dostać id musisz przejść na <a id="emotomat-info-link" href="https://7tv.app">7tv.app</a> i wyszukać pożądany profil.
+      Po przejściu na profil skopiuj końcówkę z adresu url. Brawo masz id, teraz to wklej.
+    </label>
+    <img src="{{url_for('static', filename='img/7tv-tutorial.png')}}">
+
+    <div></div>
+
+    <div id="form-fill"></div>
+
+  </form>
+
+  <script>
+    const submit_start = document.getElementById('submit-start');
+  
+    submit_start.addEventListener('click', () => {
+      const form_to_hide = document.getElementById('form-emotomat');
+      const loading_gif  = document.getElementById('loading-gif');
+  
+      if (form_to_hide.style.display !== 'none') {
+        form_to_hide.style.display = 'none';
+        loading_gif.style.display = 'flex';
+      }
+    });
+  
+    
+  </script>
 
 
 {% endblock %}

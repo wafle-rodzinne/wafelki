@@ -6,52 +6,176 @@
 
 {% block content %}
 
-    <form class="container" method="post">
-        <div class="container" id="slots-container">
-            <div id="slots-panel-left"></div>
-            <div id="slots">
-                <img id="slots-machine" src="{{url_for('static', filename='img/4x/4x-slots-no-lever.png')}}">
-                <img id="slots-lever"    src="{{url_for('static', filename='img/empty.png')}}">
-                <button id="slots-lever-button" type="button"></button>
-                <div class="container" id="slots-background">
-                    <div class="slot" id="slot-1">
-                    </div>
-                    <div class="slot" id="slot-2"></div>
-                    <div class="slot" id="slot-3"></div>
-                </div>
-                <audio id="lever-down-audio">
-                    <source src="{{url_for('static', filename='aud/lever-start.mp3')}}" type="audio/mpeg">
-                </audio>
-                <audio id="slot-spin-audio">
-                    <source src="{{url_for('static', filename='aud/slot-spin.mp3')}}" type="audio/mpeg">
-                </audio>
-                <audio id="slot-stop-audio">
-                    <source src="{{url_for('static', filename='aud/slot-stop.mp3')}}" type="audio/mpeg">
-                </audio>
-                <audio id="lever-up-audio">
-                    <source src="{{url_for('static', filename='aud/lever-stop.mp3')}}" type="audio/mpeg">
-                </audio>
-                <audio id="jackpot-audio">
-                    <source src="{{url_for('static', filename='aud/jackpot.mp3')}}" type="audio/mpeg">
-                </audio>
+    <div id="hidden-emotes-container">
+        {% for i in range(100) %}
+            <div id="hidden-emote-url-{{i}}">
+                {% set emote_n = 'svnEmoteId-' + i|string %}
+                https://cdn.7tv.app/emote/{{session[emote_n]}}/4x.webp
             </div>
-            <div id="slots-panel-right"></div>
+        {% endfor %}
+    </div>
+
+    <script>
+        var images_to_preload = ["{{ url_for('static', filename='img/4x/4x-slots-bet.png')}}",
+                                 "{{ url_for('static', filename='img/4x/4x-slots-jackpot.png')}}",
+                                 "{{ url_for('static', filename='img/4x/4x-slots-lever-down.png')}}",
+                                 "{{ url_for('static', filename='img/4x/4x-slots-lever-up.png')}}",
+                                 "{{ url_for('static', filename='img/4x/4x-slots-lever-up-hover.png')}}",
+                                 "{{ url_for('static', filename='img/4x/4x-slots-no-lever.png')}}"];
+        
+        preloadImages(images_to_preload); 
+
+        var emotes = [];
+
+        for(let i = 0; i < 100; i++){
+            var hidden_emote_id = 'hidden-emote-url-' + i.toString();
+            var hidden_emote_element = document.getElementById(hidden_emote_id);
+            var url = hidden_emote_element.innerHTML;
+            emotes.push(url);
+        }
+
+        var emotes_img = emotes;
+        preloadImages(emotes_img); 
+
+        function preloadImages(array) {
+            if (!preloadImages.list) {
+                preloadImages.list = [];
+            }
+            var list = preloadImages.list;
+            for (var i = 0; i < array.length; i++) {
+                var img = new Image();
+                img.onload = function() {
+                    var index = list.indexOf(this);
+                    if (index !== -1) {
+                        // remove image from the array once it's loaded
+                        // for memory consumption reasons
+                        list.splice(index, 1);
+                    }
+                }
+                list.push(img);
+                img.src = array[i];
+            }
+        }
+    </script>
+
+
+    <form class="container" method="post">
+        <div class="container" id="emotomat-container">
+            <div class="container" id="slots-panel-left">
+                <div id="slots-panel-left-points">{{ session['points'] }}</div>
+            </div>
+            <div class="container" id="slots-container">
+                
+                <div id="slots">
+                    <div id="mega-jackpot-container"></div>
+                    <img id="slots-machine" src="{{url_for('static', filename='img/4x/4x-slots-no-lever.png')}}">
+                    <img id="slots-jackpot" src="{{url_for('static', filename='img/4x/4x-slots-jackpot.png')}}">
+                    <img id="slots-bet"     src="{{url_for('static', filename='img/4x/4x-slots-bet.png')}}">
+                    <img id="slots-lever"   src="{{url_for('static', filename='img/empty.png')}}">
+                    <button id="slots-lever-button" type="button"></button>
+                    <button id="slots-bet-plus"  type="button"></button>
+                    <button id="slots-bet-minus" type="button"></button>
+                    <input  id="slots-bet-input" type="number" min="1" max="9999">
+                    <div class="container" id="slots-background">
+                        <div class="slot" id="slot-1">
+                        </div>
+                        <div class="slot" id="slot-2"></div>
+                        <div class="slot" id="slot-3"></div>
+                    </div>
+                    <audio id="lever-down-audio">
+                        <source src="{{url_for('static', filename='aud/lever-start.mp3')}}" type="audio/mpeg">
+                    </audio>
+                    <audio id="slot-spin-audio">
+                        <source src="{{url_for('static', filename='aud/slot-spin.mp3')}}" type="audio/mpeg">
+                    </audio>
+                    <audio id="slot-stop-audio">
+                        <source src="{{url_for('static', filename='aud/slot-stop.mp3')}}" type="audio/mpeg">
+                    </audio>
+                    <audio id="lever-up-audio">
+                        <source src="{{url_for('static', filename='aud/lever-stop.mp3')}}" type="audio/mpeg">
+                    </audio>
+                    <audio id="jackpot-audio">
+                        <source src="{{url_for('static', filename='aud/jackpot.mp3')}}" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+            <div class="container" id="slots-panel-right">
+                <div>test</div>
+            </div>
         </div>
         <div id="form-fill"></div>
     </form>
+    
 
     <script>
-        const slots_time            = 10;
+        document.getElementById("slots-bet-input").value = "100";
+        document.getElementById("slots-bet-input").oninput = function() {
+            if (this.value.length > 8) {
+                this.value = this.value.slice(0,8); 
+            }
+        }
+        document.querySelector("input").addEventListener("keypress", function (evt) {
+            if (evt.which < 48 || evt.which > 57)
+            {
+                evt.preventDefault();
+            }
+        });
+    </script>
+    <!-- <script src="{{url_for('static', filename='scripts/slots.js')}}"> -->
+    <script>
+        Number.prototype.mod = function (n) {
+            "use strict";
+            return ((this % n) + n) % n;
+        };
+
+        const slotElement = [document.getElementById('slot-1'),
+                            document.getElementById('slot-2'),
+                            document.getElementById('slot-3')];
+        
+        const emote_chance          = [100.0, 30.0, 25.0];
+        const emote_count           = {{session['svnEmoteCount']}};
+        const velocity              = 1;
+        const max_velocity          = 1;
+        const animationT            = 10000;              // ms = 10s
+        const slot_stopT            = [2800, 5600, 9300]; // 3200 5400 9300
+
+        var animation_time          = 0;
+        var last_frameT             = 0;
+        var acceleration            = 0.9;                // nie używane
+        var distance_left           = 0;
+
+        var slot_emote_id           = [3, 3, 3];
+        var slot_stopped            = [false, false, false];
+        var stopping_slot           = [true, true, true];
+        var drawn_emote_insert      = [false, false, false];
+        var drawn_emote_id          = [-1, -1, -1];
+        var winning_emote_id        = [0, 0, 0];
+        var drawn_emote_created     = [false, false, false];
+        var jackpot                 = false;
+        var megajackpot             = 0;
+        var bet_error               = 'None';
+
+
         var lever_status            = 'up';
         var lever_pull_time         = 0;
         var audio_playing           = 0;
         const lever_button          = document.getElementById('slots-lever-button');
         const lever                 = document.getElementById('slots-lever');
+
         const slots_lever_start_aud = document.getElementById('lever-down-audio');
         const slot_spin_aud         = document.getElementById('slot-spin-audio');
         const slot_stop_aud         = document.getElementById('slot-stop-audio');
         const slots_lever_stop_aud  = document.getElementById('lever-up-audio');
         const jackpot_aud           = document.getElementById('jackpot-audio');
+
+        const bet_plus              = document.getElementById("slots-bet-plus");
+        const bet_minus             = document.getElementById("slots-bet-minus");
+        const bet_input             = document.getElementById("slots-bet-input");
+
+        const points_panel          = document.getElementById('slots-panel-left-points');
+        const bet_url               = {{ url_for('emotomat.bet')|tojson }};
+        var bet_val                 = 100000;
+        var points                  = {{ session['points'] }};
 
         lever_button.addEventListener('mouseover', () => {
             if(lever_status == 'up'){
@@ -64,8 +188,81 @@
             }
         });
 
+        bet_plus.addEventListener('click', () => {
+            var val = 0;
+            if(bet_input.value){
+                val = parseInt(bet_input.value);
+            }
+
+            if(val < 100){
+                val = val + 10 - val % 10;
+            }
+            else if(val < 1000){
+                val = val + 100 - val % 100;
+            }
+            else if(val < 10000){
+                val = val + 1000 - val % 1000;
+            }
+            else if(val < 100000){
+                val = val + 10000 - val % 10000;
+            }
+            else{
+                val = val + 50000 - val % 10000;
+            }
+            bet_input.value = val;
+        });
+        bet_minus.addEventListener('click', () => {
+            var val = 0;
+            if(bet_input.value){
+                val = parseInt(bet_input.value);
+            }
+
+            if(val <= 100){
+                val = val - (10 + val % 10);
+            }
+            else if(val <= 1000){
+                val = val - (100 + val % 100);
+            }
+            else if(val <= 10000){
+                val = val - (1000 + val % 1000);
+            }
+            else if(val <= 100000){
+                val = val - (10000 + val % 10000);
+            }
+            else{
+                val = val - (50000 + val % 10000);
+            }
+            if(val < 0){ val = 0; }
+            bet_input.value = val;
+        });
+
         lever_button.addEventListener('click', () => {
             slots_lever_start_aud.play();
+
+            bet_val = parseInt(bet_input.value);
+
+            points_panel.innerHTML = points - bet_val;
+            jackpot                     = false;
+            let bet_data = {
+                "user_id": 0,
+                "bet_value": bet_val,
+            }
+
+            fetch(bet_url, {
+                "method": "POST",
+                "headers": {"Content-Type": "application/json"},
+                "body": JSON.stringify(bet_data),
+            }).then(response => response.json())
+                .then(json => {
+                        console.log(json);
+                        winning_emote_id    = json['winning_emote_id'];
+                        points              = json['points'];
+                        jackpot             = json['jackpot'];
+                        megajackpot         = json['megajackpot'];
+                        bet_error           = json['bet_error'];
+                    });
+
+            //drawWinningEmotes();
 
             requestAnimationFrame(loop);
 
@@ -91,63 +288,37 @@
                 if(slot_stopped[2]){
                     slot_stop_aud.play();
                     clearInterval(x);
-                    if("{{session['jackpot']}}" == 'true')
+                    points_panel.innerHTML = points;
+                    if(jackpot)
                         jackpot_aud.play();
                 }
             }, 50);
         });
-    </script>
-    <script>
-        const emotes = ["{{url_for('static', filename='img/clueless.png')}}",
-                        "{{url_for('static', filename='img/aware.png')}}",
-                        "{{url_for('static', filename='img/greenlight.png')}}",
-                        "{{url_for('static', filename='img/yellowlight.png')}}",
-                        "{{url_for('static', filename='img/redlight.png')}}"]
 
-        const slotElement = [document.getElementById('slot-1'),
-                             document.getElementById('slot-2'),
-                             document.getElementById('slot-3')];
+        function drawWinningEmotes(){
+            winning_emote_id[0] = Math.floor(Math.random() * emote_count);
+            if((Math.random() * 100.0) > (100.0 - emote_chance[1])){
+                winning_emote_id[1] = winning_emote_id[0];
+            }else{
+                winning_emote_id[1] = (winning_emote_id[0] + Math.floor(Math.random() * emote_count)) % emote_count;
+            }
 
-        //const slot_1 = document.getElementById('slot-1');
-        //const slot_2 = document.getElementById('slot-2');
-        //const slot_3 = document.getElementById('slot-3');
+            if((Math.random() * 100.0) > (100.0 - emote_chance[2])){
+                winning_emote_id[2] = winning_emote_id[1];
+            }else{
+                winning_emote_id[2] = (winning_emote_id[1] + Math.floor(Math.random() * emote_count)) % emote_count;
+            }
 
-        const velocity              = 0.1;
-        const max_velocity          = 1;
-        const animationT            = 10000; //ms = 10s
-        const slot_stopT            = [3200, 5400, 9300];
-        //const slot_1_stopT          = 3200;
-        //const slot_2_stopT          = 6400;
-        //const slot_3_stopT          = 9600;
+            if(winning_emote_id[0] == winning_emote_id[1] 
+            && winning_emote_id[1] == winning_emote_id[2]){
+                jackpot = true;
+                megajackpot++;
+            }
+            else{
+                megajackpot = 0;
+            }
+        }
 
-        var animation_time          = 0;
-        var last_frameT             = 0;
-        var acceleration            = 0.9;
-        var distance_left           = 0;
-
-        // make arrays
-        var slot_emote_id           = [3, 3, 3];
-        //var slot_1_emote_id         = 3;
-        //var slot_2_emote_id         = 3;
-        //var slot_3_emote_id         = 3;
-        var slot_stopped            = [false, false, false];
-        //var slot_1_stopped          = false;
-        //var slot_2_stopped          = false;
-        //var slot_3_stopped          = false;
-        var stopping_slot           = [true, true, true];
-        //var stopping_slot_1         = true;
-        //var stopping_slot_2         = true;
-        //var stopping_slot_3         = true;
-        var drawn_emote_insert      = [false, false, false];
-        //var drawn_emote_1_insert    = false;
-        //var drawn_emote_2_insert    = false;
-        //var drawn_emote_3_insert    = false;
-        var drawn_emote_id          = [-1, -1, -1];
-        //var drawn_emote_1_id        = 0;
-        //var drawn_emote_2_id        = 0;
-        //var drawn_emote_3_id        = 0;
-
-        
         function calcSize(top_pos){
             var size = '104px 104px';
 
@@ -174,9 +345,9 @@
 
         function createEmoteElement(slot, id, top_pos, img_url){
             var size = calcSize(top_pos);
-        
+
             var emote_div = document.createElement("div");
-        
+
             emote_div.id                        = 'slot-emote-' + id;
             emote_div.className                 = 'slot-emote';
             emote_div.style.position            = 'absolute';
@@ -190,7 +361,7 @@
 
             slot.appendChild(emote_div);
         }
-        
+
         function slotSetup(slot){
             for(let i = 0; i < 3; i++){
                 //var pos = -156 + i * 104;
@@ -198,7 +369,7 @@
                 createEmoteElement(slot, i, pos, emotes[i]);
             }
         }
-        
+
         function moveSlot(slot, slot_id, deltaT){
             var add_emote_flag    = true;
             var remove_emote_flag = false;
@@ -216,9 +387,9 @@
 
             slot_children.forEach(child => {
                 var top_tmp = child.style.top;
-                var step = (velocity + acceleration) * deltaT;
+                var step = velocity * deltaT;
                 
-                if(drawn_emote_insert[slot_id] && drawn_emote_id[slot_id] != -1){
+                if(drawn_emote_insert[slot_id] && drawn_emote_created[slot_id]){
                     if(step > distance_left){
                         step = distance_left;
                         stopping_slot[slot_id] = false;
@@ -238,28 +409,31 @@
             });
 
             if(add_emote_flag){
-                if(drawn_emote_insert[slot_id] && drawn_emote_id[slot_id] == -1)
+                var emote_url = emotes[slot_emote_id[slot_id] % 100]
+                if(drawn_emote_insert[slot_id] && !drawn_emote_created[slot_id]){
                     drawn_emote_id[slot_id] = slot_emote_id[slot_id];
-                
+                    drawn_emote_created[slot_id] = true;
+                    emote_url = emotes[winning_emote_id[slot_id]];
+                }
                 createEmoteElement(slot, 
-                                   slot_emote_id[slot_id]++, 
-                                   parseFloat(slot.lastChild.style.top) - 104, 
-                                   emotes[slot_emote_id[slot_id] % 5]);
+                                    slot_emote_id[slot_id]++, 
+                                    parseFloat(slot.lastChild.style.top) - 104, 
+                                    emote_url);
             }
             if(remove_emote_flag){
                 slot.removeChild(slot.children[0]);
             }
 
-            if(velocity + acceleration < max_velocity)
-                acceleration += 0.0001 * deltaT;
-            else
-                acceleration = 0.9;
+            //if(velocity + acceleration < max_velocity)
+            //    acceleration += 0.0001 * deltaT;
+            //else
+            //    acceleration = 0.9;
         }
 
         slotSetup(slotElement[0]);
         slotSetup(slotElement[1]);
         slotSetup(slotElement[2]);
-        
+
 
         function loop(){
             var now = new Date().getTime();
@@ -269,7 +443,8 @@
                 deltaT = now - last_frameT;
 
             animation_time += deltaT;
-            if(animation_time > animationT){
+            if(animation_time > animationT || bet_error != 'None'){
+                points_panel.innerHTML = points
                 animation_time = 0;
                 acceleration   = 0.9;
                 last_frameT    = 0;
@@ -281,7 +456,7 @@
                 slot_stopped        = [false, false, false];
                 stopping_slot       = [true, true, true];
                 drawn_emote_insert  = [false, false, false];
-                drawn_emote_id      = [-1, -1, -1];
+                drawn_emote_created = [false, false, false];
                 slots_lever_stop_aud.play();
                 return;
             }
@@ -301,24 +476,10 @@
                 }
             }
 
-            /*
-            if(animation_time < slot_2_stopT){
-                slot_2_emote_id = moveSlot(slot_2, 2, slot_2_emote_id, deltaT);
-            }
-            else{ slot_2_stopped = true; }
-
-            if(animation_time < slot_3_stopT){
-                slot_3_emote_id = moveSlot(slot_3, 3, slot_3_emote_id, deltaT);
-            }
-            else{ slot_3_stopped = true; }            
-            */
-
             last_frameT = new Date().getTime();
 
             requestAnimationFrame(loop);
         }
     </script>
-
-
 
 {% endblock %}

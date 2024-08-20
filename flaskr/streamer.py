@@ -1,8 +1,19 @@
 import requests
 from time import time
+import random
+
+
+MAX_TRIES = 3
+
+class SvnEmote():
+    def __init__(self, name, id, url, url_alt=None):
+        self.name    = name
+        self.id      = id
+        self.url     = url
+        self.url_alt = url_alt
 
 class Streamer():
-    def __init__(self, name):
+    def __init__(self, name='unknown', svnid=None):
         self.name           = name.lower()
         self.id             = None
         self.chatters       = None
@@ -10,8 +21,11 @@ class Streamer():
         self.sevenTVEmotes  = None
         self.bots           = ['streamelements', 'fossabot', 'nightbot', self.name]
         self.avatar         = None
+        # 7tv Section
+        self.svnid          = svnid
+        self.svnEmotes      = []
     
-# =========================================== REQUESTS ===========================================
+# ==================================== STREAMELEMENTS REQUESTS ===================================
     def requestId(self):
         req = requests.get(f'https://api.streamelements.com/kappa/v2/channels/{self.name}')
         if req.status_code != requests.codes.ok:
@@ -61,6 +75,72 @@ class Streamer():
         return 'punkty'
 # ================================================================================================
 
+# ========================================== 7TV REQUESTS ========================================
+    def request7tvData(self):
+        error = None
+        for tries in range(MAX_TRIES):
+            req = requests.get(f'https://7tv.io/v3/users/{self.svnid}')
+            if req.status_code == requests.codes.ok:
+                break
+
+        if req.status_code != requests.codes.ok:
+            error = 'Request User Error'
+            return error
+
+        connection_id = req.json()['connections'][0]['id']
+
+        for tries in range(MAX_TRIES):
+            req = requests.get(f'https://7tv.io/v3/users/TWITCH/{connection_id}')
+            if req.status_code == requests.codes.ok:
+                break
+        
+        if req.status_code != requests.codes.ok:
+            error = 'Request connection Error'
+            return error
+
+        self.name = req.json()['username']
+        emotes = req.json()['emote_set']['emotes']
+
+        for emote in emotes:
+            name    = emote['name']
+            data    = emote['data']
+            url     = 'https:' + data['host']['url'] + '/4x.webp'
+            #url_alt = 'https:' + data['host']['url'] + '/4x_static.webp'
+
+            #if not requests.get(url):# and len(requests.get(url).content) > 0:
+            #    print(url)
+            #    url     = None
+            #if not requests.get(url_alt) and len(requests.get(url_alt).content) > 0:
+            #    print(url_alt)
+            #    url_alt = None
+
+            #if not url: #and not url_alt:
+            #    error = 'One or more emotes does not exists'
+            #else:
+                #if not url:
+                #    id = url_alt.split('/')[-2]
+                #    svnEmote = SvnEmote(name, id, url_alt)
+                #elif not url_alt:
+                #    id = url.split('/')[-2]
+                #    svnEmote = SvnEmote(name, id, url)
+                #else:
+            id = url.split('/')[-2]
+            svnEmote = SvnEmote(name, id, url)
+
+            self.svnEmotes.append(svnEmote)
+        return error
+
+    def request7tvUsername(svnid):
+        for tries in range(MAX_TRIES):
+            req = requests.get(f'https://7tv.io/v3/users/{svnid}')
+            if req.status_code == requests.codes.ok:
+                break
+        
+        if req.status_code != requests.codes.ok:
+            return None
+        return req.json()['username']
+# ================================================================================================
+
 # =========================================== DB SELECT ==========================================
     def getChatterId(self, db, username):
         chatter_id = db.execute(
@@ -93,9 +173,9 @@ class Streamer():
         if not self.dbInsertChatters(db):
             errors.append('Chatters Error')
 
-        print("Emotes Insert")
-        if not self.dbInsertEmotes(db):
-            errors.append('Emotes Error')
+        #print("Emotes Insert")
+        #if not self.dbInsertEmotes(db):
+        #    errors.append('Emotes Error')
 
         print("Finish")
         return errors
@@ -221,4 +301,24 @@ class Streamer():
         print(f' - Preparing time: {round((end - start)*100)}')
 
         return True
+# ================================================================================================
+
+# ========================================== 7TV Methods =========================================
+    def getSvnEmotesIds(self, name=None):
+        shuffled_ids            = []
+        tmp_shuffled_svnEmotes  = []
+
+        if self.name == 'unknown':
+            if name is None:
+                return 'No name Error'
+            #get emotes from db
+            return 'here will be list from db'
+        else:
+            tmp_shuffled_svnEmotes = self.svnEmotes
+
+        random.shuffle(tmp_shuffled_svnEmotes)
+        for Emote in tmp_shuffled_svnEmotes[:100]:
+            shuffled_ids.append(Emote.id)
+
+        return shuffled_ids
 # ================================================================================================
