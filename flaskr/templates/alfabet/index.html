@@ -14,10 +14,10 @@
     <label for="username" id="label-username">Podaj nazwę kanału</label>
 
     <div class="container" id="form-input">
-      {% if session.get('username') == none %}
+      {% if session.get('streamer-name') == none %}
         {% set username = '' %}
       {% else %}
-        {% set username = session.get('username') %}
+        {% set username = session.get('streamer-name') %}
       {% endif %}
       <input name="username" class="text-input" id="username" maxlength="25" value="{{username}}">
       <input id="submit-start" type="submit" value="Start">

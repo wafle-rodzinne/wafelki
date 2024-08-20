@@ -23,8 +23,8 @@ def index():
     if session.get('user_id'):
         db = get_db()
         svnid = User.getStats(db, session.get('user_id'))['streamer_svnid']
-        session['username'] = Streamer.request7tvUsername(svnid)
-        print(session['username'])
+        session['streamer-name'] = Streamer.request7tvUsername(svnid)
+        print(session['streamer-name'])
 
     if request.method == 'POST':
         error = None
