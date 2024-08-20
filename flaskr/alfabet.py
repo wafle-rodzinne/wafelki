@@ -9,17 +9,25 @@ from flask import (
 from flaskr.db import get_db
 
 from .streamer import Streamer
-from .game import game
+from .alfabetGame import game
+from .session import sessionClear
+from .user import User
 
 bp = Blueprint('alfabet', __name__, url_prefix='/alfabet')
 
 
 @bp.route('/', methods=('GET', 'POST'))
 def index():
-    session.clear()
+    sessionClear()
+
+    if session.get('user_id'):
+        db = get_db()
+        svnid = User.getStats(db, session.get('user_id'))['streamer_svnid']
+        session['username'] = Streamer.request7tvUsername(svnid)
+        print(session['username'])
 
     if request.method == 'POST':
-        error = None # to mogla by być lista
+        error = None
 
         username = request.form['username']
 
@@ -75,8 +83,8 @@ def test(streamer_name):
     session['bet']      = alphabet[13:]
 
     if session['streamer_avatar'] == url_for('static', filename='img/missing_avatar.png'):
-        flash('Będzie brakować avataru...')
-        flash('Spróbuj ponownie wybrać kanał może pomoże.')
+        flash('Będzie brakować avataru...', 'info')
+        flash('Spróbuj ponownie wybrać kanał może pomoże.', 'info')
     
 
     if request.method == 'POST':
@@ -134,12 +142,16 @@ def test(streamer_name):
                 elif results[letter.lower()] == 'close':
                     points += 0.5
             
+            test_full_time = test_time
             if test_time <= 30:
                 test_time = 0
             if test_time >= 1200:
                 test_time = 1256
             score = (144 * points) + (1256 - test_time)
             session['result'] = score
+
+            if session.get('user_id'):
+                User.setABCStats(db, session.get('user_id'), score, test_full_time)
 
             return redirect(url_for("alfabet.result", streamer_name=streamer_name))
 
@@ -149,7 +161,7 @@ def test(streamer_name):
 @bp.route('/<string:streamer_name>/wynik', methods=('GET', 'POST'))
 def result(streamer_name):
     if not 'streamer_name' in session:
-        flash('Ups... Coś poszło nie tak jak miało pójść. Spróbuj od początku.')
+        #flash('Ups... Coś poszło nie tak jak miało pójść. Spróbuj od początku.')
         return redirect(url_for("alfabet.index"))
 
     session['exact']     = 'Faktycznie to '
@@ -167,7 +179,7 @@ def result(streamer_name):
                             że nie ma ani jednego w top 100.'
 
     if request.method == 'POST':
-        session.clear()
+        sessionClear()
         return redirect(url_for("alfabet.index"))
 
     return render_template('alfabet/result.html')

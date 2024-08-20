@@ -6,7 +6,7 @@
 
 {% block content %}
   <div id="loading-gif" class="container">
-    <image src="{{ url_for('static', filename='img/loading.gif') }}" id="joel">
+    <img src="{{ url_for('static', filename='img/loading.gif') }}" id="joel">
     <label>Ładowanie statystyk. Zwykle trwa do 30 sekund.</label>
   </div>
   <form class="container" method="post" id="form-to-hide">
@@ -14,7 +14,12 @@
     <label for="username" id="label-username">Podaj nazwę kanału</label>
 
     <div class="container" id="form-input">
-      <input name="username" id="username" maxlength="25">
+      {% if session.get('username') == none %}
+        {% set username = '' %}
+      {% else %}
+        {% set username = session.get('username') %}
+      {% endif %}
+      <input name="username" class="text-input" id="username" maxlength="25" value="{{username}}">
       <input id="submit-start" type="submit" value="Start">
     </div>
 
