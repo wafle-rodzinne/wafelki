@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Armitage';
+    src: local('Armitage Bold'), local('Armitage-Bold'),
+        url('Armitage-Bold.woff2') format('woff2'),
+        url('Armitage-Bold.woff') format('woff'),
+        url('Armitage-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+  }
