@@ -203,3 +203,27 @@ class User:
         }
         return stats
 
+    def getLeaderboard(db, sort_col='points'):
+        users_list = db.execute(
+            f'SELECT username, points, avatar_id FROM user_info ORDER BY {sort_col} DESC;',
+        ).fetchall()
+
+        if not users_list:
+            return None
+
+        leaderboard = {
+            'entries': 0
+        }
+        for place, user in enumerate(users_list):
+            entry = {
+                'username': user['username'],
+                'points': user['points'],
+                'avatar_id': user['avatar_id']
+            }
+            leaderboard.update({f'{place}':entry})
+            leaderboard.update({'entries': place + 1})
+            if place == 99:
+                break
+        return leaderboard
+        
+
