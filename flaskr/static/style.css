@@ -72,7 +72,75 @@ input[type=number] {
 #body-right-panel {
     display: flex;
     width: 35%;
-    flex-grow: 1;
+    /*flex-grow: 1;*/
+    max-width: 35%;
+    > #leaderboard {
+        height: 100%;
+        justify-content: flex-start;
+        > #lb-row {
+            height: 4vh;
+            background-color: #707070b2;
+            border: 2px solid var(--col-5);
+            border-bottom: 0;
+            flex-direction: row;
+            justify-content: space-between;
+            > #lb-avatar { 
+                position: relative;
+                width: 4vh;
+                height: 100%;
+                flex-shrink: 0;
+                > img {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 3.8vh;
+                    height: 3.8vh;
+                    padding: 0.1vh;
+                    border: 0;
+                    border-radius: 0;
+                }
+            }
+            > #lb-avatar:hover {
+                > #profile-avatar-image {
+                    background-image: url('img/empty.png');
+                    
+                }
+            }
+            > #lb-username {
+                width: calc(100% - 4vh - 15.7vh - 5px);
+                flex-grow: 0;
+                /*max-width: 50%;*/
+                justify-content: center;
+                overflow: hidden;
+                > span {
+                    font: 2.4vh sans-serif;
+                    color: white;
+                }
+            }
+            > #lb-points {
+                font-size: 2.6vh;
+                min-width: 15.7vh;
+                padding-right: 0.5vh;
+                width: auto;
+                flex-shrink: 0;
+                flex-grow: 2;
+                text-align: left;
+            }
+            > #stud {
+                width: 3.6vh;
+                height: 4vh;
+                flex-shrink: 0;
+                > img {
+                    padding: 0.6vh;
+                    padding-right: 0.2vh;
+                    width: 2.8vh;
+                    height: 2.8vh;
+                    border: 0;
+                    border-radius: 0;
+                }
+            }
+        }
+    }
 }
 
 #body-content {
@@ -144,10 +212,10 @@ a {
             background-position: center;
             background-repeat: no-repeat;
         }
-        > #gra-emotka-nazwa-do-zmiany {
+        > #zarabiaj {
             background-size: 48px 48px;
         }
-        > #gra-emotka-nazwa-do-zmiany:hover {
+        > #zarabiaj:hover {
             background-size: 48px 48px;
         }
     }
@@ -211,19 +279,37 @@ header {
     flex-direction: row;
     padding: 0;
     margin-bottom: 1vh;
-    > button {
-        width: 24px;
-        height: 24px;
-        border: 0;
-        margin: 0;
-        padding: 0;
-        background-color: #ffffff00;
-        > img {
+    > #panel-control {
+        flex-direction: column;
+        justify-content: flex-start;
+        > button {
             width: 24px;
             height: 24px;
             border: 0;
             margin: 0;
-            border-radius: 0;
+            padding: 0;
+            background-color: #ffffff00;
+        }
+        > #hide-right-panel{
+            background-size: 24px 24px;
+            background-image: url('img/hide-right-panel.png');
+        }
+        > #hide-right-panel:hover{
+            background-image: url('img/hide-right-panel_hover.png');
+        }
+        > #hide-left-panel{
+            background-size: 24px 24px;
+            background-image: url('img/hide-left-panel.png');
+        }
+        > #hide-left-panel:hover{
+            background-image: url('img/hide-left-panel_hover.png');
+        }
+        > #leaderboard-right-panel{
+            background-size: 24px 24px;
+            background-image: url('img/cup.png');
+        }
+        > #leaderboard-right-panel:hover{
+            background-image: url('img/cup_hover.png');
         }
     }
     > #header-title {
@@ -332,58 +418,88 @@ form {
 }
 
 #form-login {
+    justify-content: center;
     > #form-login-input {
-        flex-direction: column;
-        /*> #username {
-
+        justify-content: center;
+        > input {
+            width: 60vh;
+            margin: auto;
+            margin-bottom: 2vh;
         }
-        > #password {
-
-        }*/
     }
     > #submit-login {
-        margin-left: 4%;
-        width: 26%;
-        height: 100%;
+        width: 20vh;
+        height: 6vh;
+        margin: auto;
+        margin-top: 3vh;
+        margin-bottom: 5vh;
         background-color: rgba(255, 255, 255, 0);
         border: 1px solid var(--submit-start);
         font: 1em sans-serif;
         color: white;
     }
-    #submit-login:hover {
+    > #submit-login:hover {
         background-color: rgba(255, 255, 255, 0.05);
         color: white;
     }
-    #submit-login:active {
+    > #submit-login:active {
         color: gray;
+    }
+    > a {
+        width: 20vh;
+        height: 6vh;
+        margin-top: 3vh;
+        background-color: rgba(255, 255, 255, 0);
+        border: 1px solid blue;
+        font: 1em sans-serif;
+        color: white;
+    }
+    > a:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white;
     }
 }
 
 #form-register {
+    justify-content: center;
     > #form-register-input {
-        flex-direction: column;
-        /*> #username {
-
+        justify-content: center;
+        > input {
+            width: 60vh;
+            margin: auto;
+            margin-bottom: 2vh;
         }
-        > #password {
-
-        }*/
     }
     > #submit-register {
-        margin-left: 4%;
-        width: 26%;
-        height: 100%;
+        width: 20vh;
+        height: 6vh;
+        margin: auto;
+        margin-top: 3vh;
+        margin-bottom: 5vh;
         background-color: rgba(255, 255, 255, 0);
         border: 1px solid var(--submit-start);
         font: 1em sans-serif;
         color: white;
     }
-    #submit-register:hover {
+    > #submit-register:hover {
         background-color: rgba(255, 255, 255, 0.05);
         color: white;
     }
-    #submit-register:active {
+    > #submit-register:active {
         color: gray;
+    }
+    > a {
+        width: 20vh;
+        height: 6vh;
+        margin-top: 3vh;
+        background-color: rgba(255, 255, 255, 0);
+        border: 1px solid blue;
+        font: 1em sans-serif;
+        color: white;
+    }
+    > a:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white;
     }
 }
 
@@ -513,7 +629,7 @@ form {
     background-color: rgba(109, 109, 109, 0.61);
 }
 
-#rec-title {
+.panel-title {
     z-index: 1;
     padding-top: 2%;
     padding-bottom: 2%;
@@ -1097,11 +1213,11 @@ footer {
         > #emotomat:hover {
             background-image: url('img/slots-down.png');
         }
-        > #gra-emotka-nazwa-do-zmiany {
+        > #zarabiaj {
             background-image: url('img/clueless.png');
             background-size: 96px 96px;
         }
-        > #gra-emotka-nazwa-do-zmiany:hover {
+        > #zarabiaj:hover {
             background-image: url('img/aware.png');
             background-size: 96px 96px;
         }
@@ -1194,8 +1310,8 @@ footer {
         color: rgba(255, 255, 255, 0.623);
     }
 }
-#mode-description-container:has(#mode-container > a > #gra-emotka-nazwa-do-zmiany:hover) {
-    > #gra-emotka-nazwa-do-zmiany-description {
+#mode-description-container:has(#mode-container > a > #zarabiaj:hover) {
+    > #zarabiaj-description {
         display: flex;
         color: rgba(255, 255, 255, 0.623);
     }
@@ -1362,30 +1478,58 @@ footer {
 }
 
 #form-profile {
-    > #profile-avatar {
-        width: 128px;
-        height: 128px;
-        position: relative;
-        align-self: center;
-        > img {
-            position: absolute;
+    > #profile-info {
+        flex-direction: row;
+        justify-content: flex-start;
+        > #profile-fill {
+            width: calc(50% - 64px);
+        }
+        > #profile-avatar {
             width: 128px;
             height: 128px;
-            background-size: 128px 128px;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-color: #00000000;
+            position: relative;
+            align-self: center;
+            > img {
+                position: absolute;
+                width: 128px;
+                height: 128px;
+                background-size: 128px 128px;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-color: #00000000;
+                border: 0;
+                border-radius: 0;
+                outline:none;
+                left: 0;
+                top: 0;
+            }
+            > #profile-avatar-background {
+                background-image: url('img/avatar/background_blue_x256.png');
+            }
+        }
+        > button {
+            padding: 0;
+            margin-right: 1vh;
+            margin-left: calc(50% - 64px - 5vh - 1vh);
+            height: 5vh;
+            width: 5vh;
+            color: #00000000;
             border: 0;
             border-radius: 0;
-            outline:none;
-            left: 0;
-            top: 0;
+            background-color: #00000000;
+            background-image: url('img/logout.png');
+            background-size: 5vh 5vh;
         }
-        > #profile-avatar-background {
-            background-image: url('img/avatar/background_blue_x256.png');
+        > button:hover {
+            background-image: url('img/logout_red.png');
+        }
+        > button:active {
+            background-image: url('img/logout_dark.png');
         }
     }
 }
+
+
 
 .studs {
     font-family: Armitage;

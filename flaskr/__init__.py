@@ -24,7 +24,6 @@ def gdrive_daily_db_backup():
     for i in range(5):
         date = f'{datetime.datetime.now()}'
         date = date[:19]
-        #date_formated = re.sub('[:]', '-', date)
         date_formated = re.sub('[ ]', '_', date)
         filename = date_formated + '_flaskr.sqlite'
         if GDrive.uploadDB(filename, 'DailyBackup'):
@@ -89,9 +88,12 @@ def create_app(test_config=None):
     from . import profile
     app.register_blueprint(profile.bp)
     
+    from . import leaderboard
+    app.register_blueprint(leaderboard.bp)
+
     from . import db
     db.init_app(app)
-
+    
     if not GDrive.downloadDB():
         init_db()
         print(' ! Created clean database.')

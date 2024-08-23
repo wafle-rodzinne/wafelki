@@ -23,7 +23,7 @@
           <img id="emotomat" src="{{ url_for('static', filename='img/empty.png') }}">
         </a>
         <a class="container" href="/">
-          <img id="gra-emotka-nazwa-do-zmiany" src="{{ url_for('static', filename='img/empty.png') }}">
+          <img id="zarabiaj" src="{{ url_for('static', filename='img/empty.png') }}">
         </a>
         <a class="container" href="/">
           <img id="kula" src="{{ url_for('static', filename='img/empty.png') }}">
@@ -46,28 +46,31 @@
 
   <div class="container" id="body-container">
     <div id="body-left-panel">
-      <div id="rec-title">Info</div>
-        {% for category, message in get_flashed_messages(with_categories=true) %}
-          <div class="flash" id="{{ category }}">{{ message }}</div>
-        {% endfor %}
+      <div id="left-title" class="panel-title">Info</div>
+        <div id="flash">
+          {% for category, message in get_flashed_messages(with_categories=true) %}
+            <div class="flash" id="{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
     </div>
 
     <div class="container" id="body-content">
 
       <section class="container">
         <header class="container" id="header">
-          <button id="hide-left-panel">
-            <img id="hide-left-panel-img" src="{{ url_for('static', filename='img/hide-left-panel.png') }}">
-          </button>
+          <div class="container" id="panel-control">
+            <button id="hide-left-panel"></button>
+          </div>
           {% block header %}{% endblock %}
-          <button id="hide-right-panel">
-            <img id="hide-right-panel-img" src="{{ url_for('static', filename='img/hide-right-panel.png') }}">
-          </button>
+          <div class="container" id="panel-control">
+            <button id="hide-right-panel"></button>
+            <button id="leaderboard-right-panel"></button>
+          </div>
         </header>
         {% block content %}{% endblock %}
         
         <footer class="container">
-          stopa
+          stopa <!-- TODO Add something to footer -->
         </footer>
       </section>
 
@@ -80,7 +83,7 @@
                            'https://www.lidl.pl/q/query/wyprzedaz',
                            'https://www.zabka.pl/gazetka-promocyjna/',
                            'https://stokrotka.pl/oferta/gazetki-promocyjne/'] %}
-      <div id="rec-title">Polecane Kanały</div>
+      <div id="right-title" class="panel-title">Polecane Kanały</div>
 
       <div id="rec-content">
 
@@ -111,15 +114,13 @@
         </div>
 
       </div>
+      <div class="container" id="leaderboard">
+      </div>
 
     </div>
   </div>
 </div>
 <script>
-  const left_panel  = document.getElementById('body-left-panel');
-  const img_left    = document.getElementById('hide-left-panel-img');
-  const right_panel = document.getElementById('body-right-panel');
-  const img_right   = document.getElementById('hide-right-panel-img');
   const logged_img  = document.getElementById('logged');
 
   if("{{session.get('avatar_id')}}" == "None"){
@@ -129,79 +130,6 @@
     {% set avatar_name = 'img/avatar/avatar_' + session.get('avatar_id')|string + '.png' %}
     logged_img.style.backgroundImage = "url({{url_for('static', filename=avatar_name)}})";
   }
-
-  var bar_status = 0;
-  if(parseInt(sessionStorage.getItem('bar status'))){
-    bar_status = parseInt(sessionStorage.getItem('bar status'));
-  }
-  else{
-    bar_status = (bar_status === 0) ? bar_status : 0;
-  }
-  
-
-  function hideLeft() {
-      left_panel.style.display = 'none';
-      img_left.style.transform = 'scaleX(-1)';
-  }
-  function revealLeft() {
-      left_panel.style.display = 'flex';
-      img_left.style.transform = 'scaleX(1)';
-  }
-  function hideRight() {
-      right_panel.style.display = 'none';
-      img_right.style.transform = 'scaleX(-1)';
-  }
-  function revealRight() {
-      right_panel.style.display = 'flex';
-      img_right.style.transform = 'scaleX(1)';
-  }
-  function updateBarStatus(){
-    sessionStorage.setItem('bar status', bar_status);
-  }
-
-  if(bar_status.length == 0){
-    revealLeft();
-    revealRight();
-  }
-  else if(bar_status == 1){
-    hideLeft();
-  }
-  else if(bar_status == 2){
-    hideRight();
-  }
-  else if(bar_status == 3){
-    hideLeft();
-    hideRight();
-  }
-
-  
-  const hide_left_panel  = document.getElementById('hide-left-panel');
-  hide_left_panel.addEventListener('click', () => {
-
-    if (left_panel.style.display !== 'none') {
-      hideLeft();
-      bar_status += 1;
-      updateBarStatus();
-    }
-    else {
-      revealLeft();
-      bar_status -= 1;
-      updateBarStatus();
-    }
-  });
-
-  const hide_right_panel = document.getElementById('hide-right-panel');
-  hide_right_panel.addEventListener('click', () => {
-
-    if (right_panel.style.display !== 'none') {
-      hideRight();
-      bar_status += 2;
-      updateBarStatus();
-    }
-    else {
-      revealRight();
-      bar_status -= 2;
-      updateBarStatus();
-    }
-  });
 </script>
+<script src="{{url_for('static', filename='scripts/hidesidepanels.js')}}"></script>
+<script src="{{url_for('static', filename='scripts/leaderboardpanel.js')}}"></script>
