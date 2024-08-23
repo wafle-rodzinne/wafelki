@@ -123,7 +123,7 @@ function createLeaderboardEntry(place, entry, last){
     points.id                   = 'lb-points';
     var points_text             = document.createElement("span");
     points_text.innerHTML           = formated_points;
-    setPointsStyle(points);
+    setPointsStyle(points, points_text);
     
     // Elements assebly
     avatar.appendChild(avatar_background);
@@ -141,6 +141,41 @@ function createLeaderboardEntry(place, entry, last){
     });
     avatar.addEventListener('mouseleave', () => {
         avatar_img.style.backgroundImage = 'url(' + avatar_url + ')';
+    });
+
+    username.addEventListener('mouseover', () => {
+        console.log(username.innerHTML, username_text.scrollWidth, username_text.clientWidth, username_text.scrollWidth > username_text.clientWidth)
+        if(username_text.scrollWidth > username_text.clientWidth){
+            username_text.style.textOverflow = 'clip';
+            username_text.style.whiteSpace = 'normal';
+            username_text.style.wordBreak = 'break-word';
+    
+            username_text.style.position = 'fixed';
+            username_text.style.right = leaderboard.getBoundingClientRect()['width'].toString() + 'px';
+            username_text.style.backgroundColor = '#3a3441bf';
+            username_text.style.width = 'auto';
+            username_text.style.padding = '1vh';
+            username_text.style.fontSize = '2vh';
+            username_text.style.border = '2px solid grey';
+            username_text.style.zIndex = '2';
+            username.style.alignItems = 'center';
+        }
+    });
+    username.addEventListener('mouseleave', () => {
+        username_text.style.textOverflow = 'ellipsis';
+        username_text.style.overflow = 'hidden';
+        username_text.style.whiteSpace = 'nowrap';
+        username_text.style.wordBreak = 'initial';
+        
+        username_text.style.position = 'initial';
+        username_text.style.backgroundColor = 'initial';
+        username_text.style.width = '90%';
+        username_text.style.padding = '0';
+        username_text.style.paddingLeft = '5%';
+        username_text.style.paddingRight = '5%';
+        username_text.style.fontSize = '1.9vh';
+        username_text.style.border = '0';
+        username_text.style.zIndex = '0';
     });
 
     // Row assebly
@@ -192,21 +227,21 @@ function format3digit(points_string){
 
 function setRowStyle(row, last){
     style = 'height: 4vh; \
-            width: calc(100% - 8px); \
-                background-color: #707070b2; \
-                border: 2px solid var(--col-5); \
-                border-bottom: 0; \
-                flex-direction: row; \
-                justify-content: space-between;';
+            width: calc(100% - 4px); \
+            background-color: #707070b2; \
+            border: 2px solid var(--col-5); \
+            border-bottom: 0; \
+            flex-direction: row; \
+            justify-content: space-between;';
     if(last)
         style += 'border-bottom: 2px solid var(--col-5);';
     row.style = style;
 }
 function setAvatarStyle(avatar){
     avatar.style = 'position: relative; \
+                    flex-shrink: 0; \
                     width: 4vh; \
                     height: 100%; \
-                    flex-shrink: 0; \
                     border-right: 2px solid var(--col-5);';
 }
 function setAvatarImagesStyle(avatar_background, avatar_img, avatar_url){
@@ -225,33 +260,41 @@ function setAvatarImagesStyle(avatar_background, avatar_img, avatar_url){
     avatar_background.style = style + "background-image: url('/static/img/avatar/background_blue_x256.png');";
     avatar_img.style        = style + "background-image: url(\'" + avatar_url + "\');";
 }
-function setUsernameStyle(username, username_text){//calc(100% - 4vh - 15.7vh - 5px); 
-    username.style = 'width: 40%; \
-                      flex-grow: 0; \
+function setUsernameStyle(username, username_text){
+    username.style = 'flex-grow: 0; \
+                      flex-shrink: 2; \
+                      min-width: 0; \
+                      width: 100%; \
                       justify-content: center; ';
 
-    username_text.style = 'width: 96%; \
-                           padding-left: 2%; \
-                           padding-right: 2%; \
+    username_text.style = 'flex-grow: 0; \
+                           flex-shrink: 2; \
+                           width: 90%; \
+                           padding-left: 5%; \
+                           padding-right: 5%; \
                            font: 1.9vh sans-serif; \
                            color: white; \
                            white-space: nowrap; \
                            overflow: hidden; \
                            text-overflow: ellipsis;';
 }
-function setPointsStyle(points){
+function setPointsStyle(points, points_text){
+                    //min-width: 8.7vh; \
     points.style = 'font-size: 2.6vh; \
-                    min-width: 9vh; \
                     padding-right: 0.5vh; \
-                    width: auto; \
+                    flex-grow: 0; \
                     flex-shrink: 0; \
-                    flex-grow: 2; \
-                    text-align: left;';
+                    width: 14.5vh; \
+                    text-align: left; \
+                    justify-content: center;';
+    points_text.style = 'width: auto; \
+                        margin: auto; \
+                        margin-left: 0;';
 }
 function setStudStyle(stud, stud_img, stud_url){
     stud.style = 'width: 3.6vh; \
-                  height: 4vh; \
                   flex-shrink: 0; \
+                  height: 4vh; \
                   border-left: 2px solid var(--col-5);';
 
     stud_img.style = 'padding: 0.6vh; \

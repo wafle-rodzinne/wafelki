@@ -66,18 +66,26 @@ input[type=number] {
 #body-left-panel {
     display: flex;
     flex-direction: column;
-    width: 35%;
-    flex-grow: 1;
+    width: 20%;
+    min-width: 20%;
 }
 #body-right-panel {
-    display: flex;
-    width: 35%;
-    /*flex-grow: 1;*/
-    max-width: 35%;
+    display: block;
+    width: 20%;
+    height: 100%;
+    overflow-y: hidden;
+    /*flex-grow: 1;
+    max-width: 35%;*/
+    min-width: 20%;
+    justify-content: flex-start;
     > #leaderboard {
-        height: 100%;
+        height: calc(100% - 3.022vh - 3px - 11px);
+        width: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
         justify-content: flex-start;
-        > #lb-row {
+        flex-shrink: 0;
+        /*> #lb-row {
             height: 4vh;
             background-color: #707070b2;
             border: 2px solid var(--col-5);
@@ -109,7 +117,7 @@ input[type=number] {
             > #lb-username {
                 width: calc(100% - 4vh - 15.7vh - 5px);
                 flex-grow: 0;
-                /*max-width: 50%;*/
+                /*max-width: 50%;
                 justify-content: center;
                 overflow: hidden;
                 > span {
@@ -119,7 +127,7 @@ input[type=number] {
             }
             > #lb-points {
                 font-size: 2.6vh;
-                min-width: 15.7vh;
+                /*min-width: 15.7vh;
                 padding-right: 0.5vh;
                 width: auto;
                 flex-shrink: 0;
@@ -139,12 +147,12 @@ input[type=number] {
                     border-radius: 0;
                 }
             }
-        }
+        }*/
     }
 }
 
 #body-content {
-    width: 100%;
+    width: 100%;/*calc(60% - 4px);*/
     height: 100%;
     background-color: var(--col-5);
     /*max-height: 100vh;
@@ -630,15 +638,17 @@ form {
 }
 
 .panel-title {
+    position: sticky;
     z-index: 1;
-    padding-top: 2%;
-    padding-bottom: 2%;
+    padding-top: 0.6vh;
+    padding-bottom: 0.6vh;
+    height: 3.022vh;
     background-color: var(--col-5);
     border-top: 1px solid var(--col-11);
     border-bottom: 2px solid var(--col-11);
     color: var(--col-10);
     /*color: rgb(205, 255, 125);*/
-    font: 1.5em sans-serif;
+    font: 2.6vh sans-serif;
 }
 
 #rec-content {
