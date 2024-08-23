@@ -4,6 +4,9 @@
   <h1 id="header-title">{% block title %}Emotomat{% endblock %}</h1>
 {% endblock %}
 
+<!-- TODO Lego profile -->
+<!-- TODO Improve appearance-->
+
 {% block content %}
 
     <div id="hidden-emotes-container">
@@ -254,7 +257,6 @@
                 "body": JSON.stringify(bet_data),
             }).then(response => response.json())
                 .then(json => {
-                        console.log(json);
                         winning_emote_id    = json['winning_emote_id'];
                         points              = json['points'];
                         jackpot             = json['jackpot'];
