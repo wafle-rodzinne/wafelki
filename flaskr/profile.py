@@ -35,7 +35,7 @@ def user(username):
 
     if request.method == 'POST':
 
-        return redirect('/')
+        return redirect(url_for('auth.logout'))
 
     return render_template('profile/user.html')
 
