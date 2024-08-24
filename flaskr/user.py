@@ -92,10 +92,9 @@ class User:
         except db.IntegrityError:
             error = 'Nie baza :('
         return error
-    # TEMPORARY
-    def setUnlocks(db, user_id):
+
+    def setUnlocks(db, user_id, unlocks):
         error = None
-        unlocks = "ffff-ffff-ffff-ffff-ffff-ffff-ffff-ffff-ffff"
         try:
             db.execute(
                 'UPDATE user SET unlocks = ? WHERE id = ?',
@@ -193,6 +192,8 @@ class User:
         stats = {
             'id':user['id'],
             'username':user['username'],
+            'avatar_id':user['avatar_id'],
+            'unlocks':user['unlocks'],
             'points':user['points'],
             'abc_best_score':user['abc_best_score'],
             'abc_best_time':user['abc_best_time'],

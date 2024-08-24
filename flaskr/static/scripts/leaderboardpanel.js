@@ -144,7 +144,6 @@ function createLeaderboardEntry(place, entry, last){
     });
 
     username.addEventListener('mouseover', () => {
-        console.log(username.innerHTML, username_text.scrollWidth, username_text.clientWidth, username_text.scrollWidth > username_text.clientWidth)
         if(username_text.scrollWidth > username_text.clientWidth){
             username_text.style.textOverflow = 'clip';
             username_text.style.whiteSpace = 'normal';

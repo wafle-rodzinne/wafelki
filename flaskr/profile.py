@@ -33,6 +33,9 @@ def user(username):
         db = get_db()
         session['username'] = User.username(db, session.get('user_id'))
 
+    if username != session.get('username'):
+        return redirect(url_for('profile.user', username=session.get('username')))
+
     if request.method == 'POST':
 
         return redirect(url_for('auth.logout'))
@@ -58,6 +61,7 @@ def stats(username):
 
     return jsonify(response_data)
 
+
 @bp.route('/<string:username>/svnbind', methods=['POST'])
 def svnbind(username):
     if session.get('user_id') is None:
@@ -77,3 +81,43 @@ def svnbind(username):
     #return render_template('profile/user.html')
     return jsonify({'work':'done'})
     #return redirect(url_for('profile.user', username=username))
+    
+
+@bp.route('/<string:username>/avatars', methods=('GET', 'POST'))
+def avatars(username):
+    if session.get('user_id') is None:
+        return redirect(url_for('auth.login'))
+
+    if session.get('username') is None:
+        db = get_db()
+        session['username'] = User.username(db, session.get('user_id'))
+
+    if username != session.get('username'):
+        return redirect(url_for('profile.avatars', username=session.get('username')))
+    
+    if request.method == 'POST':
+
+        return redirect('/')
+
+    return render_template('profile/avatars.html')
+    
+# TODO Set or buy avatar
+# if buy setUnlocks() -> setAvatarId()
+# if choose setAvatarId()
+@bp.route('/<string:username>/avatars/set', methods=('GET', 'POST'))
+def setAvatar(username):
+    db = get_db()
+
+    if session.get('user_id') is None:
+        user_id = User.id(db, username)
+    else:
+        user_id = session.get('user_id')
+
+    if user_id is None:
+        return redirect(url_for('auth.login'))
+        
+    response_data = User.getStats(db, user_id)
+    svnid = response_data['streamer_svnid']
+    response_data.update({'streamer_svn_name':Streamer.request7tvUsername(svnid)})
+
+    return jsonify(response_data)

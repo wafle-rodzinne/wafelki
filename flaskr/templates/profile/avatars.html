@@ -1,0 +1,248 @@
+{% extends 'based.html' %}
+
+{% block header %}
+  <h1 id="header-title">{% block title %}Profil{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form class="container" id="form-avatars" method="post">
+    <div id="avatar-info" class="container">
+      <div class="studs" id="avatar-points"><span>00.000.000</span></div>
+      <div id="avatar-choice">
+        <img id="avatar-choice-background" src="{{ url_for('static', filename='/img/empty.png') }}">
+        <img id="avatar-choice-img"        src="{{ url_for('static', filename='/img/empty.png') }}">
+      </div>
+      <div id="avatar-fill"></div>
+    </div>
+    <label class="studs" id="label-avatar-cost">-</label>
+    <table id="table-avatars">
+        {% for i in range(8) %}
+        <tr class="container">
+            {% if i == 7 %} {% set elems = 14 %}
+            {% else %}      {% set elems = 17 %}
+            {% endif %}
+            {% for j in range(elems) %}
+            {% set id = i * 17 + j %}
+            <th class="container" id="avatar-{{id}}">
+                <div id="avatar-container">
+                    <button type="button"          id="button-{{id}}"></button>
+                    <img class="avatar-background" id="background-{{id}}" src="{{ url_for('static', filename='/img/empty.png') }}">
+                    <img class="avatar-img"        id="img-{{id}}"        src="{{ url_for('static', filename='/img/empty.png') }}">
+                </div>
+            </th>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+
+    <div id="form-fill"></div>
+
+  </form>
+
+  <script>
+    const avatar_choice_img  = document.getElementById('avatar-choice-img');
+
+    var avatar_id = "{{session.get('avatar_id')}}";
+    var points = 0;
+
+    setAvatar();
+
+    var stats_url = "{{ url_for('profile.stats', username=session.get('username')) }}";
+    fetch(stats_url).then(response => response.json())
+    .then(json => {
+            points        = json['points'];
+            avatar_id     = json['avatar_id'];
+            var unlocks   = json['unlocks'];
+
+            setPoints();
+            setAvatar();
+            decoded_unlocks = decodeUnlocks(unlocks);
+
+            for(let i = 0; i < decoded_unlocks.length; i++){
+                var avatar_button = document.getElementById('button-' + decoded_unlocks[i].toString());
+                avatar_button.style.backgroundImage = 'none';
+                avatar_button.style.backgroundColor = 'transparent';
+            }
+        });
+
+
+    for(let i = 0; i < 133; i++){
+        var avatar_img    = document.getElementById('img-' + i.toString());
+        var avatar_button = document.getElementById('button-' + i.toString());
+
+        if(i == 132){
+            avatar_img.style.backgroundImage = 'url(/static/img/avatar/default.png)'
+            avatar_button.style.backgroundImage = 'none';
+            avatar_button.style.backgroundColor = 'transparent';
+        }
+        else
+            avatar_img.style.backgroundImage = 'url(/static/img/avatar/avatar_' + i + '.png)'
+        
+        // TODO Add onevent click choose or buy
+        // TODO Add fetch to choose or buy
+    }
+
+    function decodeUnlocks(unlocks){
+        var unlocks_array    = unlocks.split('-');
+        var decoded_unlocks = [];
+
+        for(let i = unlocks_array.length - 1; i >= 0; i--){
+            var formated_unlocks = Number('0x' + unlocks_array[i]);
+
+            for(let j = 0; j < 16; j++){
+                var unlock_id = (unlocks_array.length - i - 1) * 16 + j;
+                if(unlock_id > 131)
+                    break;
+
+                if(formated_unlocks % 2 == 1)
+                    decoded_unlocks.push(unlock_id);
+
+                formated_unlocks = Math.floor(formated_unlocks / 2);
+            }
+        }
+        return decoded_unlocks;
+    }
+
+    function setPoints(){
+        console.log(points);
+    }
+
+    function setAvatar(){
+        if( avatar_id == "None"){
+            avatar_choice_img.style.backgroundImage = "url(\'/static/img/avatar/default.png\')";
+            document.getElementById('background-132')
+                    .style.backgroundImage = 'url(/static/img/avatar/background_blue_x256.png)';
+        }
+        else{
+            var avatar_name = '/static/img/avatar/avatar_' + avatar_id + '.png';
+            avatar_choice_img.style.backgroundImage = "url(\'" + avatar_name + "\')";
+            document.getElementById('background-' + avatar_id.toString())
+                    .style.backgroundImage = 'url(/static/img/avatar/background_blue_x256.png)';
+        }
+    }
+  </script>
+
+  <!--<script>
+  const avatar_background = document.getElementById('profile-avatar-background');
+  const avatar_img        = document.getElementById('profile-avatar-img');
+
+  if("{{session.get('avatar_id')}}" == "None"){
+    avatar_img.style.backgroundImage = "url({{url_for('static', filename='img/avatar/default.png')}})";
+  }
+  else{
+    {% set avatar_name = 'img/avatar/avatar_' + session.get('avatar_id')|string + '.png' %}
+    avatar_img.style.backgroundImage = "url({{url_for('static', filename=avatar_name)}})";
+  }
+  </script>
+
+  <script>
+    const points_element         = document.getElementById('table-row-emotomat-points').lastElementChild;
+    const won_points_element     = document.getElementById('table-row-emotomat-won').lastElementChild;
+    const lost_points_element    = document.getElementById('table-row-emotomat-lost').lastElementChild;
+
+    const abc_score_element      = document.getElementById('table-row-abc-score').lastElementChild;
+    const abc_time_element       = document.getElementById('table-row-abc-time').lastElementChild;
+    
+    const svn_profile_element    = document.getElementById('table-row-svn-profile');
+    const svn_profile_name       = svn_profile_element.childNodes[3];
+    const svn_profile_id         = svn_profile_element.childNodes[5];
+    const svn_profile_add        = document.getElementById('table-row-svn-add');
+    const add_svn_user_input     = document.getElementById('svn-user-id');
+    const add_svn_user_button    = document.getElementById('add-svn-user');
+    const delete_svn_user_button = document.getElementById('delete-svn-user');
+
+
+    var stats_updated       = false;
+    var points              = 0;
+    var lost_points         = 0;
+    var won_points          = 0;
+
+    var abc_best_score      = 0;
+    var abc_best_time       = 0;
+    var abc_best_min        = '00';
+    var abc_best_sec        = '00';
+
+    var is_streamer         = 0;
+    var streamer_svnid      = null;
+    var streamer_svn_name   = 'Nie można uzyskać nazwy'
+
+    stats_url = "{{ url_for('profile.stats', username=session.get('username')) }}";
+    fetch(stats_url).then(response => response.json())
+        .then(json => {
+                points            = json['points'];
+                abc_best_score    = json['abc_best_score'];
+                abc_best_time     = json['abc_best_time'];
+                lost_points       = json['lost_points'];
+                won_points        = json['won_points'];
+                is_streamer       = json['streamer_bool'];
+                streamer_svnid    = json['streamer_svnid'];
+                streamer_svn_name = json['streamer_svn_name'];
+                stats_updated     = true;
+
+                abc_best_min = Math.round(abc_best_time / 60); 
+                abc_best_sec = Math.round(abc_best_time % 60);
+
+                if(abc_best_min < 10)
+                    abc_best_min = '0' + abc_best_min.toString();
+                else
+                    abc_best_min = abc_best_min.toString();
+
+                if(abc_best_sec < 10)
+                    abc_best_sec = '0' + abc_best_sec.toString();
+                else
+                    abc_best_sec = abc_best_sec.toString();
+
+            });
+
+    var x = setInterval(function() {
+        if(stats_updated){
+            points_element.innerHTML        = points;
+            lost_points_element.innerHTML   = lost_points;
+            won_points_element.innerHTML    = won_points;
+            abc_score_element.innerHTML     = abc_best_score;
+            abc_time_element.innerHTML      = abc_best_min + ':' + abc_best_sec;
+
+            if(streamer_svnid == null){
+                svn_profile_element.style.display = 'none';
+                svn_profile_add.style.display     = 'flex';
+            }
+            else{
+                svn_profile_name.innerHTML      = streamer_svn_name;
+                svn_profile_id.innerHTML        = streamer_svnid;
+            }
+
+
+            clearInterval(x);
+        }
+    }, 100);
+
+    add_svn_user_button.addEventListener('click', () => {
+        if(add_svn_user_input.value != ''){
+            data = {
+                'svnid': add_svn_user_input.value,
+            }
+            add_svn_user_url = "{{ url_for('profile.svnbind', username=session.get('username')) }}";
+            fetch(add_svn_user_url, {
+                "method": "POST",
+                "headers": {"Content-Type": "application/json"},
+                "body": JSON.stringify(data),
+            }).then( response => {
+                location.reload();
+                }); 
+        }
+    });
+
+    delete_svn_user_button.addEventListener('click', () => {
+            add_svn_user_url = "{{ url_for('profile.svnbind', username=session.get('username')) }}";
+            fetch(add_svn_user_url, {
+                "method": "POST",
+                "headers": {"Content-Type": "application/json"},
+                "body": JSON.stringify({'svnid': null}),
+            }).then( response => {
+                location.reload();
+                }); 
+    });
+  </script>-->
+  
+{% endblock %}

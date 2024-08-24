@@ -1539,7 +1539,108 @@ footer {
     }
 }
 
-
+#form-avatars {
+    > #avatar-info {
+        flex-direction: row;
+        justify-content: flex-start;
+        > #avatar-fill, #avatar-points{
+            width: calc(50% - 64px);
+        }
+        > #avatar-choice {
+            width: 128px;
+            height: 128px;
+            position: relative;
+            align-self: center;
+            > img {
+                position: absolute;
+                width: 128px;
+                height: 128px;
+                background-size: 128px 128px;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-color: #00000000;
+                border: 0;
+                border-radius: 0;
+                outline:none;
+                left: 0;
+                top: 0;
+                background-image: url('img/avatar/background_blue_x256.png');
+            }
+        }
+    }
+    > #label-avatar-cost {
+        font-size: 3.2vh;
+        width: auto;
+    }
+    > #table-avatars {
+        > tbody {
+            > tr {
+                flex-direction: row;
+                justify-content: center;
+                > th {
+                    width: auto;
+                    height: auto;
+                    > #avatar-container {
+                        width: 48px;
+                        height: 48px;
+                        position: relative;
+                        padding: 0;
+                        > button {
+                            position: absolute;
+                            top: 0; left: 0;
+                            z-index: 1;
+                            width: 48px;
+                            height: 48px;
+                            padding: 0;
+                            border-radius: 50%;
+                            background: 0;
+                            border: 0;
+                            color: transparent;
+                            background-size: 48px 48px;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                            background-color: #00000052;
+                            background-image: url('img/avatar/locked.png');
+                        }
+                        > img {
+                            position: absolute;
+                            top: 0; left: 0;
+                            z-index: 0;
+                            width: 48px;
+                            height: 48px;
+                            border: 0;
+                            border-radius: 0;
+                            background-size: 48px 48px;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                        }
+                        > .avatar-background {
+                            background-image: url('img/avatar/background_brown_x256.png');
+                        }
+                    }
+                    > #avatar-container:hover {
+                        > img {
+                            top: -8px; left: -8px;
+                            z-index: 2;
+                            width: 64px;
+                            height: 64px;
+                            background-size: 64px 64px;
+                        }
+                        > button {
+                            top: -8px; left: -8px;
+                            z-index: 3;
+                            width: 64px;
+                            height: 64px;
+                            background-size: 64px 64px;
+                            background-color: #00000000;
+                            background-image: url('img/avatar/locked_hover.png');
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 .studs {
     font-family: Armitage;

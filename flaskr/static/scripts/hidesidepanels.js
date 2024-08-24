@@ -4,6 +4,8 @@ const right_panel = document.getElementById('body-right-panel');
 const hide_left_panel  = document.getElementById('hide-left-panel');
 const hide_right_panel = document.getElementById('hide-right-panel');
 
+// TODO Auto hide panels if width too small
+// and prevent to open
 
 var bar_status = 0;
 if(parseInt(sessionStorage.getItem('bar status'))){
