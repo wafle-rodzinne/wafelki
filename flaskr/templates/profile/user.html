@@ -9,10 +9,11 @@
     <div id="profile-info" class="container">
       <div id="profile-fill"></div>
       <div id="profile-avatar"> <!-- TODO Avatar shop/change -->
+        <button id="profile-avatar-button" type="submit" value="redirect_avatars"></button>
         <img id="profile-avatar-background" src="{{ url_for('static', filename='/img/empty.png') }}">
         <img id="profile-avatar-img"        src="{{ url_for('static', filename='/img/empty.png') }}">
       </div>
-      <button id="profile-logout" type="submit"></button>
+      <button id="profile-logout" type="submit" value="logout"></button>
     </div>
     <label id="label-username">{{ session['username'] }}</label>
     <table id="table-profile-stats">
@@ -116,6 +117,7 @@
     stats_url = "{{ url_for('profile.stats', username=session.get('username')) }}";
     fetch(stats_url).then(response => response.json())
         .then(json => {
+          console.log(json['unlocks'])
                 points            = json['points'];
                 abc_best_score    = json['abc_best_score'];
                 abc_best_time     = json['abc_best_time'];

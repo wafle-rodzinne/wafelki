@@ -5,6 +5,27 @@
 {% endblock %}
 
 {% block content %}
+  <!-- TODO repair last 2 rows -->
+  <style>
+    {% for id in range(132) %}
+    {% set neighbour_ids = [id + 1, id - 1, id - 18, id - 17, id - 16, id + 16, id + 17, id + 18]%}
+    #form-avatars{
+        > #table-avatars {
+            > tbody:has(tr > th > #container-{{id}}:hover) {
+                {% for near_id in range(8) %}
+                {% set n_id = neighbour_ids[near_id] %}
+                > tr > th > #container-{{n_id}} {
+                    > img {
+                        opacity: 0.5;
+                    }
+                }
+                {% endfor %}
+            }
+        }
+    }
+    {% endfor %}
+  </style>
+
   <form class="container" id="form-avatars" method="post">
     <div id="avatar-info" class="container">
       <div class="studs" id="avatar-points"><span>00.000.000</span></div>
@@ -24,7 +45,7 @@
             {% for j in range(elems) %}
             {% set id = i * 17 + j %}
             <th class="container" id="avatar-{{id}}">
-                <div id="avatar-container">
+                <div class="avatar-container" id="container-{{id}}">
                     <button type="button"          id="button-{{id}}"></button>
                     <img class="avatar-background" id="background-{{id}}" src="{{ url_for('static', filename='/img/empty.png') }}">
                     <img class="avatar-img"        id="img-{{id}}"        src="{{ url_for('static', filename='/img/empty.png') }}">
@@ -45,10 +66,12 @@
 
     var avatar_id = "{{session.get('avatar_id')}}";
     var points = 0;
+    console.log(avatar_id)
+    var stats_url       = "{{ url_for('profile.stats', username=session.get('username')) }}";
+    var set_avatar_url  = "{{ url_for('profile.setAvatar', username=session.get('username')) }}";
 
     setAvatar();
 
-    var stats_url = "{{ url_for('profile.stats', username=session.get('username')) }}";
     fetch(stats_url).then(response => response.json())
     .then(json => {
             points        = json['points'];
@@ -81,6 +104,21 @@
         
         // TODO Add onevent click choose or buy
         // TODO Add fetch to choose or buy
+        avatar_button.addEventListener('click', () => {
+            console.log(i);
+            fetch(set_avatar_url, {
+                "method": "POST",
+                "headers": {"Content-Type": "application/json"},
+                "body": JSON.stringify({'avatar_choice': i,}),
+                })
+                .then(response => response.json())
+                .then(json => {
+                    console.log(json);
+                    //setAvatar();
+                    //setPoints();
+                    location.reload();
+                });
+        });
     }
 
     function decodeUnlocks(unlocks){
@@ -109,7 +147,8 @@
     }
 
     function setAvatar(){
-        if( avatar_id == "None"){
+        console.log(avatar_id, typeof(avatar_id));
+        if( avatar_id == 'None' || avatar_id == null){
             avatar_choice_img.style.backgroundImage = "url(\'/static/img/avatar/default.png\')";
             document.getElementById('background-132')
                     .style.backgroundImage = 'url(/static/img/avatar/background_blue_x256.png)';

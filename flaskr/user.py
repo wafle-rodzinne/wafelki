@@ -11,7 +11,6 @@ class User:
         error = None
         # pierwsze 133 bity odpowiadają statusowi odblokowania danego avataru
         unlocks_encoded = "0000-0000-0000-0000-0000-0000-0000-0000-0000"
-        print(name, generate_password_hash(password), 10000, unlocks_encoded, 0, 0, 0, 0, 0)
         try:
             db.execute(
                 'INSERT INTO user (username, password, points, unlocks, \
@@ -73,15 +72,16 @@ class User:
         ).fetchone()
         if not user:
             return 'Nie udało się zmienić avataru.'
+            
+        if avatar_id:
+            unlocks = user['unlocks'].split('-')
 
-        unlocks = user['unlocks'].split('-')
+            avatar_block = round(avatar_id / 16)
+            avatar_block_id = (avatar_id % 16) * 2
+            avatar_block_dec = int('0x' + unlocks[avatar_block], 0)
 
-        avatar_block = round(avatar_id / 16)
-        avatar_block_id = (avatar_id % 16) * 2
-        avatar_block_dec = int('0x' + unlocks[avatar_block], 0)
-
-        if avatar_block_dec & avatar_block_id is False:
-            return 'Nie posiadasz tego avataru.'
+            if avatar_block_dec & avatar_block_id is False:
+                return 'Nie posiadasz tego avataru.'
         
         try:
             db.execute(

@@ -1499,6 +1499,22 @@ footer {
             height: 128px;
             position: relative;
             align-self: center;
+            > button {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 128px;
+                height: 128px;
+                color: transparent;
+                background-color: transparent;
+                border: 1px soild transparent;
+                border-color: transparent;
+                border-radius: 50%;
+                z-index: 2;
+            }
+            > button:hover {
+                background-color: rgba(255, 255, 255, 0.122);
+            }
             > img {
                 position: absolute;
                 width: 128px;
@@ -1580,7 +1596,7 @@ footer {
                 > th {
                     width: auto;
                     height: auto;
-                    > #avatar-container {
+                    > .avatar-container {
                         width: 48px;
                         height: 48px;
                         position: relative;
@@ -1618,7 +1634,7 @@ footer {
                             background-image: url('img/avatar/background_brown_x256.png');
                         }
                     }
-                    > #avatar-container:hover {
+                    > .avatar-container:hover {
                         > img {
                             top: -8px; left: -8px;
                             z-index: 2;
